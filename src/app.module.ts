@@ -4,6 +4,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
+import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { configValidationSchema } from './config.schema';
 
         return {
           ssl: isProduction,
+          logging: true,
           extra: {
             ssl: isProduction ? { rejectUnauthorized: false } : null,
           },
@@ -35,6 +37,7 @@ import { configValidationSchema } from './config.schema';
       },
     }),
     AuthModule,
+    TaskMetadataModule,
   ],
 })
 export class AppModule {}

@@ -5,14 +5,30 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskRepository } from './tasks.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
+import { TaskMetadataRepository } from 'src/task-metadata/metatasks.repository';
+import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
+import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(TaskRepository)
     private taskRepository: TaskRepository,
+    private taskMetadataTask: TaskMetadataRepository,
   ) {}
+  // async getmetaTask(id: string, user: User): Promise<TaskMetadata> {
+  //   return this.taskMetadataTask.getTaskById(id, user);
+  // }
+
+  async getDetailsById(
+    user: User,
+    id: string,
+    filterDto: GetTaskMetadaDto,
+  ): Promise<Task> {
+    return this.taskRepository.getDetailsById(user, id, filterDto);
+  }
+
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     return this.taskRepository.getTasks(filterDto, user);
   }
