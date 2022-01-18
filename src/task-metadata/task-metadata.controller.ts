@@ -9,9 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { userInfo } from 'os';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
 import { Task } from 'src/tasks/task.entity';
 import { CreateMetaTaskDto } from './dto/create-metaTask.dto';
 import { GetTaskMetadaDto } from './dto/get-tasks-metadata.dto';
@@ -25,20 +22,20 @@ export class TaskMetadataController {
   constructor(private tasksMetadataService: TaskMetadataService) {}
 
   @Get('/:id/details')
-  getAllDetailsTasks(
+  getDetailsTaskById(
     @Param('id') id: string,
     @Query() filterDto: GetTaskMetadaDto,
     @Query() task: Task,
   ): Promise<TaskMetadata[]> {
     return this.tasksMetadataService.getTaskDetails(filterDto, task, id);
   }
-  // @Get('/:id')
-  // getTasksDetails(
-  //   @Param('id') id: string,
-  //   @GetUser() user: User,
-  // ): Promise<TaskMetadata> {
-  //   return this.tasksMetadataService.getTaskDetails(id, user);
-  // }
+  @Get()
+  getAllTaskDetails(
+    @Query() filterDto: GetTaskMetadaDto,
+    @Query() task: Task,
+  ): Promise<TaskMetadata[]> {
+    return this.tasksMetadataService.getAllTasksDetails(filterDto, task);
+  }
   @Post()
   createMetadataTask(
     @Body() createMetaTaskDto: CreateMetaTaskDto,

@@ -28,11 +28,11 @@ export class TasksController {
 
   @Get('/:id/details')
   getDetailsTask(
-    @GetUser() user: User,
+    @Query() task: Task,
     @Param('id') id: string,
     @Query() filterDto: GetTaskMetadaDto,
   ): Promise<Task> {
-    return this.tasksService.getDetailsById(user, id, filterDto);
+    return this.tasksService.getDetailsById(task, id, filterDto);
   }
   @Get()
   getTasks(

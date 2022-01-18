@@ -8,8 +8,9 @@ export class CreateMetaTaskDto {
   details: string;
 
   @IsOptional()
-  @IsBoolean()
-  isDeactivated?: boolean;
+  @IsString()
+  // @IsBoolean()
+  isDeactivated?: string;
 
   @IsUUID()
   @IsString()

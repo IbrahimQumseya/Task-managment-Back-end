@@ -14,7 +14,7 @@ export class TaskMetadata {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column('text')
   details: string;
 
   @Column('boolean', { default: true })
@@ -22,6 +22,5 @@ export class TaskMetadata {
 
   @OneToOne(() => Task, (task) => task.taskMetadata)
   @JoinColumn()
-  @Exclude()
   task: Task;
 }

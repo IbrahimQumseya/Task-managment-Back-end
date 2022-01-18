@@ -22,11 +22,11 @@ export class TasksService {
   // }
 
   async getDetailsById(
-    user: User,
+    task: Task,
     id: string,
     filterDto: GetTaskMetadaDto,
   ): Promise<Task> {
-    return this.taskRepository.getDetailsById(user, id, filterDto);
+    return this.taskRepository.getDetailsById(task, id, filterDto);
   }
 
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
