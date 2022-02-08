@@ -9,6 +9,7 @@ import { User } from '../auth/user.entity';
 import { TaskMetadataRepository } from 'src/task-metadata/metatasks.repository';
 import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
 import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
+import { createQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class TasksService {
@@ -41,10 +42,27 @@ export class TasksService {
     return found;
   }
   async deleteTaskById(id: string, user: User): Promise<void> {
-    const result = await this.taskRepository.delete({ id, user });
-    if (result.affected === 0) {
-      throw new NotFoundException(`Task with ID"${id}"not found`);
-    }
+    const task = this.taskRepository.findOne({ id, user });
+    const deletedTask = await this.taskMetadataTask.deleteSelectedTask(
+      await task,
+    );
+
+    // return deletedTask;
+    // const findOne = this.taskRepository.getTaskById(id);
+    // const query = createQueryBuilder('task');
+    // const taskMetaFindOne = await this.taskMetadataTask.find({
+    //   where: { task: id },
+    // });
+    // query.where({ id: id });
+    // if (taskMetaFindOne) {
+    //   console.log('------------', await query.getOne());
+    // }
+    // // console.log('user', user);
+    // const result = await this.taskRepository.delete({ id, user });
+    // console.log(result);
+    // if (result.affected === 0) {
+    //   throw new NotFoundException(`Task with ID"${id}"not found`);
+    // }
   }
   async updateStatusById(
     id: string,
@@ -56,7 +74,19 @@ export class TasksService {
     await this.taskRepository.save(task);
     return task;
   }
-  createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
-    return this.taskRepository.createTask(createTaskDto, user);
+  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+    const task = await this.taskRepository.createTask(createTaskDto, user);
+    const taskMetadata = await this.taskMetadataTask.createMetadataTask(
+      {
+        details: 'hello there213',
+        taskId: task.id,
+        isDeactivated: 'false',
+      },
+      task,
+    );
+    return task;
   }
+  // createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+  //   return this.taskRepository.createTask(createTaskDto, user);
+  // }
 }

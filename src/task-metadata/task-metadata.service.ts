@@ -26,16 +26,8 @@ export class TaskMetadataService {
     );
   }
 
-  async getTaskDetails(
-    filerDto: GetTaskMetadaDto,
-    task: Task,
-    id: string,
-  ): Promise<TaskMetadata[]> {
-    return await this.taskMetadataRepository.getTasksDetails(
-      filerDto,
-      task,
-      id,
-    );
+  async getTaskDetail(task: Task, id: string): Promise<TaskMetadata> {
+    return await this.taskMetadataRepository.getTaskDetail(id);
   }
 
   async createMetadataTask(

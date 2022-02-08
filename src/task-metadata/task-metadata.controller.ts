@@ -24,10 +24,9 @@ export class TaskMetadataController {
   @Get('/:id/details')
   getDetailsTaskById(
     @Param('id') id: string,
-    @Query() filterDto: GetTaskMetadaDto,
     @Query() task: Task,
-  ): Promise<TaskMetadata[]> {
-    return this.tasksMetadataService.getTaskDetails(filterDto, task, id);
+  ): Promise<TaskMetadata> {
+    return this.tasksMetadataService.getTaskDetail(task, id);
   }
   @Get()
   getAllTaskDetails(

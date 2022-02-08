@@ -1,10 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Exclude } from 'class-transformer';
 import { User } from '../auth/user.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,

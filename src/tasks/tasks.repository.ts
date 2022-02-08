@@ -24,21 +24,20 @@ export class TaskRepository extends Repository<Task> {
   ): Promise<Task> {
     const { details, isDeactivated } = filterDto;
     const query = this.createQueryBuilder('task');
-    query.where({ task: id, limit: 1 });
+    query.where({ taskMetadata: id, limit: 1 });
 
-    if (details) {
-      query.andWhere('taskmetadata.details = :details', { details: details });
-    }
-    if (isDeactivated == false) {
-      query.andWhere('taskmetadata.isDeactivated = :isDeactivated', {
-        isDeactivated: isDeactivated,
-      });
-    }
+    // if (details) {
+    //   query.andWhere('taskmetadata.details = :details', { details: details });
+    // }
+    // if (isDeactivated == false) {
+    //   query.andWhere('taskmetadata.isDeactivated = :isDeactivated', {
+    //     isDeactivated: isDeactivated,
+    //   });
+    // }
 
     try {
       const detailss = await query
         .innerJoinAndSelect('task.taskMetadata', 'taskMetadata')
-
         .getOne();
       return detailss;
       //return details;
@@ -96,7 +95,7 @@ export class TaskRepository extends Repository<Task> {
         .innerJoinAndSelect(
           'task.taskMetadata',
           'taskMetadata',
-          "taskMetadata.isDeactivated= 'false'",
+          "taskMetadata.isDeactivated= 'true'",
         )
         .getMany();
       return tasks;

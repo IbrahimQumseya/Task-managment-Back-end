@@ -11,57 +11,54 @@ import { TaskMetadata } from './entity/task-metadata.entity';
 export class TaskMetadataRepository extends Repository<TaskMetadata> {
   private logger = new Logger('TaskMetadataRepository', { timestamp: true });
 
+  async deleteSelectedTask(task: Task): Promise<void> {
+    const findMetaTask = await this.getTaskDetail(task.id);
+    if (findMetaTask) {
+      const result = await this.delete(findMetaTask);
+      if (result.affected === 0) {
+        throw new NotFoundException(`Task with ID"${task.id}"not found`);
+      }
+    } else {
+      throw new NotFoundException(`Task with ID"${task.id}"not found`);
+    }
+
+    // return findMetaTask;
+  }
   async getAllTasksDetails(
     filterDto: GetTaskMetadaDto,
     task: Task,
   ): Promise<TaskMetadata[]> {
     const { details, isDeactivated } = filterDto;
 
-    const query = this.createQueryBuilder('taskmetadata');
-    query.where({ task });
+    const query = this.createQueryBuilder('taskMetadata');
+    // query.where({ task });
     if (details) {
-      query.andWhere('taskmetadata.details = :details', { details });
+      query.andWhere('taskMetadata.details = :details', { details });
     }
-    if (!isDeactivated) {
-      query.andWhere('taskmetadata.isDeactivated = :isDeactivated', {
-        isDeactivated,
-      });
-    }
+    // if (!isDeactivated) {
+    //   query.andWhere('taskMetadata.isDeactivated = :isDeactivated', {
+    //     isDeactivated,
+    //   });
+    // }
     try {
       const detailss = await query
-        .innerJoinAndSelect('taskmetadata.task', 'task')
+        .innerJoinAndSelect('taskMetadata.task', 'task')
         .getMany();
-      console.log(detailss);
+      // console.log('loooooog', detailss);
       return detailss;
     } catch (error) {
       throw new NotFoundException();
     }
   }
 
-  async getTasksDetails(
-    filterDto: GetTaskMetadaDto,
-    task: Task,
-    id: string,
-  ): Promise<TaskMetadata[]> {
-    const { details } = filterDto;
-    const query = this.createQueryBuilder('taskmetadata');
-
-    const isDeactivated = false;
-    query.where({ task: id });
-
-    if (details) {
-      query.andWhere('taskmetadata.details = :details', { details });
-    }
-    if (!isDeactivated) {
-      query.andWhere('taskmetadata.isDeactivated = :isDeactivated', {
-        isDeactivated,
-      });
-    }
+  async getTaskDetail(id: string): Promise<TaskMetadata> {
+    const query = this.createQueryBuilder('taskMetadata');
     try {
       const detailss = await query
-        .innerJoinAndSelect('taskmetadata.task', 'task')
-        .getMany();
-      console.log(detailss);
+        .innerJoinAndSelect('taskMetadata.task', 'task')
+        .andWhere('task.id = :id', { id })
+        .getOne();
+      // console.log(detailss);
       return detailss;
     } catch (error) {
       throw new NotFoundException();
@@ -77,7 +74,6 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
     console.log(isDeactivated);
     console.log(isDeactivated);
     const metaTasks = this.create({
-      
       details: details,
       isDeactivated: Boolean(isDeactivated),
       id: uuid(),

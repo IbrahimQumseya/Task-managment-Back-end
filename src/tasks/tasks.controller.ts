@@ -20,6 +20,7 @@ import { UpdateTaskStatusDto } from './dto/update-task-statys.dto';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 
+//jwtStartegy
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
@@ -51,7 +52,10 @@ export class TasksController {
     return this.tasksService.getTaskById(id, user);
   }
   @Delete('/:id')
-  deleteTaskById(@Param('id') id: string, user: User): Promise<void> {
+  deleteTaskById(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<void> {
     return this.tasksService.deleteTaskById(id, user);
   }
   @Post()

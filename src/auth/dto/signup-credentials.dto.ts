@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {
   IsEmail,
-  isString,
   IsString,
   Matches,
   MaxLength,
@@ -9,7 +8,7 @@ import {
 } from 'class-validator';
 
 /* eslint-disable prettier/prettier */
-export class AuthSignInCredentialsDto {
+export class AuthSignUpCredentialsDto {
   @IsString()
   @MinLength(4)
   @MaxLength(20)
@@ -23,4 +22,17 @@ export class AuthSignInCredentialsDto {
   })
   password: string;
 
+  @IsEmail()
+  @IsString()
+  email: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(20)
+  firstName: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(20)
+  lastName: string;
 }
