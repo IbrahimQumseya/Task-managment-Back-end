@@ -17,6 +17,21 @@ export class TaskRepository extends Repository<Task> {
     return this.findOne(id);
   }
 
+  async getTaskLimitStartEnd(
+    start: number,
+    end: number,
+    user: User,
+  ): Promise<Task[]> {
+    const query = this.createQueryBuilder('task');
+    query.where({ user }).skip(start).take(end);
+    try {
+      const task = query.getMany();
+      return task;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async getDetailsById(
     task: Task,
     id: string,
@@ -98,6 +113,8 @@ export class TaskRepository extends Repository<Task> {
           "taskMetadata.isDeactivated= 'true'",
         )
         .getMany();
+      // console.log(tasks);
+
       return tasks;
     } catch (error) {
       this.logger.error(

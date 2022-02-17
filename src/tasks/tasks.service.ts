@@ -21,6 +21,13 @@ export class TasksService {
   // async getmetaTask(id: string, user: User): Promise<TaskMetadata> {
   //   return this.taskMetadataTask.getTaskById(id, user);
   // }
+  async getTaskLimitStartEnd(
+    start: number,
+    end: number,
+    user: User,
+  ): Promise<Task[]> {
+    return this.taskRepository.getTaskLimitStartEnd(start, end, user);
+  }
 
   async getDetailsById(
     task: Task,
@@ -46,23 +53,6 @@ export class TasksService {
     const deletedTask = await this.taskMetadataTask.deleteSelectedTask(
       await task,
     );
-
-    // return deletedTask;
-    // const findOne = this.taskRepository.getTaskById(id);
-    // const query = createQueryBuilder('task');
-    // const taskMetaFindOne = await this.taskMetadataTask.find({
-    //   where: { task: id },
-    // });
-    // query.where({ id: id });
-    // if (taskMetaFindOne) {
-    //   console.log('------------', await query.getOne());
-    // }
-    // // console.log('user', user);
-    // const result = await this.taskRepository.delete({ id, user });
-    // console.log(result);
-    // if (result.affected === 0) {
-    //   throw new NotFoundException(`Task with ID"${id}"not found`);
-    // }
   }
   async updateStatusById(
     id: string,
