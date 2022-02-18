@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { IsNull } from 'typeorm';
 
 /* eslint-disable prettier/prettier */
 export class AuthSignUpCredentialsDto {
@@ -47,7 +48,6 @@ export class AuthSignUpCredentialsDto {
     message: 'Password Is Weak!',
   })
   password: string;
-
 
   email: string;
 
