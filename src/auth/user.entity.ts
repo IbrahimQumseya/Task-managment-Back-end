@@ -9,7 +9,7 @@ export class User {
 
   @Column({ unique: true })
   username: string;
-
+  // delete nullable:true
   @Column({nullable:true})
   firstName: string;
 
