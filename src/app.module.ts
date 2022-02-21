@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
+import { UserDetailsModule } from './user-details/user-details.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { TaskMetadataModule } from './task-metadata/task-metadata.module';
     }),
     AuthModule,
     TaskMetadataModule,
+    UserDetailsModule,
   ],
 })
 export class AppModule {}

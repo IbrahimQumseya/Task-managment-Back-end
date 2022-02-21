@@ -70,9 +70,6 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
     task: Task,
   ): Promise<TaskMetadata> {
     const { details, isDeactivated } = createMetaTaskDto;
-
-    console.log(isDeactivated);
-    console.log(isDeactivated);
     const metaTasks = this.create({
       details: details,
       isDeactivated: Boolean(isDeactivated),

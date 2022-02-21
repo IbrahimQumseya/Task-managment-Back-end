@@ -67,9 +67,9 @@ export class TasksController {
     description: 'Task ID',
   })
   getDetailsTask(
-    @Query('task') task: Task,
+    @Query() task: Task,
     @Param('id') id: string,
-    @Query('filterDto') filterDto: GetTaskMetadaDto,
+    @Query() filterDto: GetTaskMetadaDto,
   ): Promise<Task> {
     return this.tasksService.getDetailsById(task, id, filterDto);
   }
@@ -77,7 +77,7 @@ export class TasksController {
   @Get()
   @ApiOkResponse({ description: 'Get all the tasks for a user' })
   getTasks(
-    @Query('filterDto') filterDto: GetTasksFilterDto,
+    @Query() filterDto: GetTasksFilterDto,
     @GetUser() user: User,
   ): Promise<Task[]> {
     this.logger.verbose(

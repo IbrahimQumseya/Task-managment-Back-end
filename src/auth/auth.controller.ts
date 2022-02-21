@@ -1,4 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ApiCreatedResponse,
@@ -9,6 +16,10 @@ import {
 } from '@nestjs/swagger';
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
+import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
+import { User } from './user.entity';
+import { GetUser } from './get-user.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -31,5 +42,21 @@ export class AuthController {
     @Body() authCredentialsDto: AuthSignInCredentialsDto,
   ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentialsDto);
+  }
+
+  // @Patch('/:id')
+  // updateUser(
+  //   @Param('id') idUser: string,
+  //   @Body() updateUserDetailsDto: UpdateUserDetailsDto,
+  // ): Promise<User> {
+  //   return this.authService.updateUser(idUser, updateUserDetailsDto);
+  // }
+  @UseGuards(AuthGuard())
+  @Patch('/updateUser')
+  updateUser(
+    @GetUser() user: User,
+    @Body() updateUserDetailsDto: UpdateUserDetailsDto,
+  ): Promise<User> {
+    return this.authService.updateUser(user, updateUserDetailsDto);
   }
 }
