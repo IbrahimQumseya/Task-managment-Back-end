@@ -30,10 +30,13 @@ export class UserDetailsController {
   constructor(private userDetailsService: UserDetailsService) {}
 
   @Get('/getUserDetails')
+  @ApiOkResponse({ description: 'Get user details' })
   getUserDetails(@GetUser() user: User): Promise<UserDetails> {
     return this.userDetailsService.getUserDetails(user);
   }
   @Post('/createDetails')
+  @ApiCreatedResponse({ description: 'Create User Details' })
+  @ApiBody({ type: CreateUserDetailsDto })
   createUserDetailsForUser(
     // @Param('id') idUser: string,
     @GetUser() user: User,

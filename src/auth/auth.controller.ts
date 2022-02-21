@@ -9,7 +9,7 @@ import {
 import { AuthService } from './auth.service';
 import {
   ApiCreatedResponse,
-  ApiResponse,
+  ApiBearerAuth,
   ApiOkResponse,
   ApiBody,
   ApiUnauthorizedResponse,
@@ -44,15 +44,12 @@ export class AuthController {
     return this.authService.signIn(authCredentialsDto);
   }
 
-  // @Patch('/:id')
-  // updateUser(
-  //   @Param('id') idUser: string,
-  //   @Body() updateUserDetailsDto: UpdateUserDetailsDto,
-  // ): Promise<User> {
-  //   return this.authService.updateUser(idUser, updateUserDetailsDto);
-  // }
-  @UseGuards(AuthGuard())
   @Patch('/updateUser')
+  @ApiOkResponse({ description: 'Get Task details' })
+  @ApiBody({ type: UpdateUserDetailsDto })
+  @ApiBearerAuth('access-token')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @UseGuards(AuthGuard())
   updateUser(
     @GetUser() user: User,
     @Body() updateUserDetailsDto: UpdateUserDetailsDto,
