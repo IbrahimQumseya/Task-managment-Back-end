@@ -19,10 +19,11 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiTags,
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-
+@ApiTags('Task-Metadata')
 @Controller('task-metadata')
 @UseGuards(AuthGuard())
 @ApiBearerAuth('access-token')

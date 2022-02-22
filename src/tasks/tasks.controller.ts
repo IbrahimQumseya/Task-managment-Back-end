@@ -23,11 +23,13 @@ import {
   ApiBearerAuth,
   ApiParam,
   ApiCreatedResponse,
+  ApiTags,
   ApiOkResponse,
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 //jwtStartegy
+@ApiTags('Tasks')
 @Controller('tasks')
 @UseGuards(AuthGuard())
 @ApiBearerAuth('access-token')

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
-  ApiParam,
+  ApiTags,
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -21,7 +21,7 @@ import { User } from 'src/auth/user.entity';
 import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { UserDetailsService } from './user-details.service';
-
+@ApiTags('User-Details')
 @Controller('user-details')
 @UseGuards(AuthGuard())
 @ApiBearerAuth('access-token')
