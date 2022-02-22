@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Task } from '../tasks/task.entity';
-import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import { UserDetails } from '../user-details/entity/user-details.entity';
 import {
   Entity,
   Column,
@@ -17,7 +17,7 @@ export class User {
 
   @Column({ unique: true })
   username: string;
-  
+
   // delete nullable:true
   @Column({ nullable: true })
   firstName: string;

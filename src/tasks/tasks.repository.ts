@@ -17,14 +17,26 @@ export class TaskRepository extends Repository<Task> {
     return this.findOne(id);
   }
 
+  async updateStatusById(
+    id: string,
+    status: TaskStatus,
+  ): Promise<Task> {
+    const task = await this.getTaskById(id);
+    task.status = status;
+    await this.save(task);
+    return task;
+  }
+
   async getTaskLimitStartEnd(
     start: number,
     end: number,
     user: User,
   ): Promise<Task[]> {
     const query = this.createQueryBuilder('task');
-    query.where({ user }).skip(start).take(end);
+    query.where({ user });
+
     try {
+      query.skip(start).take(end);
       const task = query.getMany();
       return task;
     } catch (error) {
@@ -52,7 +64,7 @@ export class TaskRepository extends Repository<Task> {
 
     try {
       const detailss = await query
-        .innerJoinAndSelect('task.taskMetadata', 'taskMetadata')
+        // .innerJoinAndSelect('task.taskMetadata', 'taskMetadata')
         .getOne();
       return detailss;
       //return details;
@@ -60,32 +72,6 @@ export class TaskRepository extends Repository<Task> {
       throw new InternalServerErrorException();
     }
   }
-  // async getMetadataTask(
-  //   filterDto: GetTaskMetadaDto,
-  //   task: Task,
-  //   user: User,
-  // ): Promise<TaskMetadata[]> {
-  //   const { isDeactivated, details } = filterDto;
-  //   const query = this.createQueryBuilder('taskmetadata');
-  //   query.where({ user });
-  //   if (details) {
-  //     query.andWhere('taskmetadata.details = :details', { details: details });
-  //   }
-  //   if (isDeactivated) {
-  //     query.andWhere('taskmetadata.isDeactivated = :isDeactivated', {
-  //       isDeactivated: isDeactivated,
-  //     });
-  //   }
-
-  //   try {
-  //     const metaTask = await query
-  //       .innerJoinAndSelect('taskmetadata.task', 'task')
-  //       .getMany();
-  //     return metaTask;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException();
-  //   }
-  // }
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
@@ -102,9 +88,6 @@ export class TaskRepository extends Repository<Task> {
       );
     }
     try {
-      // const metaTask = await query
-      //   .innerJoinAndSelect('task.metadata', 'metadata')
-      //   .getMany();
       const tasks = await query
         .innerJoinAndSelect('task.user', 'user')
         .innerJoinAndSelect(
@@ -113,7 +96,6 @@ export class TaskRepository extends Repository<Task> {
           "taskMetadata.isDeactivated= 'true'",
         )
         .getMany();
-      // console.log(tasks);
 
       return tasks;
     } catch (error) {
@@ -137,13 +119,4 @@ export class TaskRepository extends Repository<Task> {
     await this.save(task);
     return task;
   }
-
-  // async createMetadataTask(
-  //   createMetaTaskDto: CreateMetaTaskDto,
-  //   metaTask: TaskMetadata,
-  // ): Promise<TaskMetadata> {
-  //   const { details, isDeactivated } = createMetaTaskDto;
-  //   const metaTasks = this.create({});
-  //   return metaTask;
-  // }
 }

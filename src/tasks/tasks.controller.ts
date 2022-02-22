@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
+import { GetTaskMetadaDto } from '../task-metadata/dto/get-tasks-metadata.dto';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -31,14 +31,14 @@ import {
 //jwtStartegy
 @ApiTags('Tasks')
 @Controller('tasks')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('access-token')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 export class TasksController {
   private logger = new Logger('TasksController');
   constructor(private tasksService: TasksService) {}
-
-  @Get('/:start/:end')
+  //doing dto for skip and bring <--------------------------
+  @Get('/:skip/:bring')
   @ApiOkResponse({ description: 'Get tasks by limit' })
   @ApiParam({
     name: 'skip',
@@ -129,9 +129,8 @@ export class TasksController {
   updateStatusById(
     @Param('id') id: string,
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
-    @GetUser() user: User,
   ): Promise<Task> {
     const { status } = updateTaskStatusDto;
-    return this.tasksService.updateStatusById(id, status, user);
+    return this.tasksService.updateStatusById(id, status);
   }
 }
