@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Task } from '../tasks/task.entity';
+import { UserDetails } from 'src/user-details/entity/user-details.entity';
 import {
   Entity,
   Column,
@@ -8,7 +9,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { UserDetails } from 'src/user-details/entity/user-details.entity';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -16,6 +17,7 @@ export class User {
 
   @Column({ unique: true })
   username: string;
+  
   // delete nullable:true
   @Column({ nullable: true })
   firstName: string;
