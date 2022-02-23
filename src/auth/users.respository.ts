@@ -28,7 +28,7 @@ export class UsersRepository extends Repository<User> {
     });
     try {
       await this.save(user);
-      return "USER_CREATED"
+      return 'USER_CREATED';
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException('Username already exists');
@@ -36,5 +36,9 @@ export class UsersRepository extends Repository<User> {
         throw new InternalServerErrorException();
       }
     }
+  }
+  async getUser(idUser: string): Promise<User> {
+    const user = this.findOne({ where: { id: idUser } });
+    return user;
   }
 }

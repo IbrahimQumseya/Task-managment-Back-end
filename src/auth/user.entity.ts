@@ -1,7 +1,14 @@
 /* eslint-disable prettier/prettier */
 import { Task } from '../tasks/task.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { UserDetails } from 'src/user-details/entity/user-details.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -10,13 +17,13 @@ export class User {
   @Column({ unique: true })
   username: string;
   // delete nullable:true
-  @Column({nullable:true})
+  @Column({ nullable: true })
   firstName: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   lastName: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   email: string;
 
   @Column()
@@ -28,4 +35,7 @@ export class User {
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];
+
+  @OneToOne(() => UserDetails, (userDetails) => userDetails.user)
+  userDetails: UserDetails;
 }

@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.respository';
 import * as bcrypt from 'bcrypt';
@@ -6,6 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
+import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
+import { UserDetailsRepository } from 'src/user-details/user-details.repository';
+import { User } from './user.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +21,8 @@ export class AuthService {
     @InjectRepository(UsersRepository)
     private userRepository: UsersRepository,
     private jwtService: JwtService,
+    @InjectRepository(UserDetailsRepository)
+    private userDetailsRepository: UserDetailsRepository,
   ) {}
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
     return this.userRepository.createUser(authCredentialsDto);
@@ -30,6 +40,33 @@ export class AuthService {
       return { accessToken };
     } else {
       throw new UnauthorizedException('Please check you login credentials');
+    }
+  }
+  async updateUser(
+    user: User,
+    updateUserDetailsDto: UpdateUserDetailsDto,
+  ): Promise<User> {
+    const userDetails = await this.userDetailsRepository.getUserDetails(user);
+    const getUser = await this.userRepository.getUser(user.id);
+    const { firstName, lastName, address, location, telephone } =
+      updateUserDetailsDto;
+    getUser.firstName = firstName;
+    getUser.lastName = lastName;
+
+    if (!userDetails) {
+      throw new ConflictException('The user Doesnt have details');
+    } else {
+      userDetails.address = address;
+      userDetails.location = location;
+      userDetails.telephone = Number(telephone);
+      getUser.userDetails = userDetails;
+    }
+    try {
+      await this.userRepository.save(getUser);
+      await this.userDetailsRepository.save(userDetails);
+      return getUser;
+    } catch (error) {
+      throw new InternalServerErrorException();
     }
   }
 }

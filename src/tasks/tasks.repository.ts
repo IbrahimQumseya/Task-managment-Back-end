@@ -138,12 +138,4 @@ export class TaskRepository extends Repository<Task> {
     return task;
   }
 
-  // async createMetadataTask(
-  //   createMetaTaskDto: CreateMetaTaskDto,
-  //   metaTask: TaskMetadata,
-  // ): Promise<TaskMetadata> {
-  //   const { details, isDeactivated } = createMetaTaskDto;
-  //   const metaTasks = this.create({});
-  //   return metaTask;
-  // }
 }

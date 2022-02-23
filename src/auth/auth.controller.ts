@@ -1,14 +1,25 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ApiCreatedResponse,
-  ApiResponse,
+  ApiBearerAuth,
   ApiOkResponse,
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
+import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
+import { User } from './user.entity';
+import { GetUser } from './get-user.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -31,5 +42,18 @@ export class AuthController {
     @Body() authCredentialsDto: AuthSignInCredentialsDto,
   ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentialsDto);
+  }
+
+  @Patch('/updateUser')
+  @ApiOkResponse({ description: 'Get Task details' })
+  @ApiBody({ type: UpdateUserDetailsDto })
+  @ApiBearerAuth('access-token')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @UseGuards(AuthGuard())
+  updateUser(
+    @GetUser() user: User,
+    @Body() updateUserDetailsDto: UpdateUserDetailsDto,
+  ): Promise<User> {
+    return this.authService.updateUser(user, updateUserDetailsDto);
   }
 }
