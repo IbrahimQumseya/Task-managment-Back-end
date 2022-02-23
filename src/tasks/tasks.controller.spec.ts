@@ -1,24 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { PassportModule } from '@nestjs/passport';
-import { Test } from '@nestjs/testing';
-import { User } from '../auth/user.entity';
-import { TaskMetadata } from '../task-metadata/entity/task-metadata.entity';
-import { TaskMetadataRepository } from '../task-metadata/metatasks.repository';
-import { TaskMetadataService } from '../task-metadata/task-metadata.service';
+import { Test, TestingModule } from '@nestjs/testing';
 import { TaskStatus } from './task-status.enum';
-import { Task } from './task.entity';
 import { TasksController } from './tasks.controller';
-import { TaskRepository } from './tasks.repository';
 import { TasksService } from './tasks.service';
-
-const mockTasksRepository = () => ({
-  getTasks: jest.fn(),
-  findOne: jest.fn(),
-});
-// const mockTasksMetadataRepository = () => ({
-//   getTasks: jest.fn(),
-//   findOne: jest.fn(),
-// });
 const mockUser = {
   username: 'user12',
   password: 'hanna121212!S',
@@ -37,36 +21,77 @@ const mockUser = {
   email: '',
   isDeactivated: true,
 };
+const mockTask = {
+  title: 'TestTitle',
+  description: 'Test desc',
+  id: 'someId',
+  status: TaskStatus.OPEN,
+  taskMetadata: {
+    id: 'soomeId',
+    details: 'someDetails',
+    isDeactivated: true,
+    task: null,
+  },
+  user: mockUser,
+};
+const ApiTasksService = {
+  provide: TasksService,
+  useFactory: () => ({
+    getTaskLimitStartEnd: jest.fn(),
+    getDetailsById: jest.fn(),
+    getTasks: jest.fn(),
+    getTaskById: jest.fn(),
+    createTask: jest.fn(),
+    updateStatusById: jest.fn(),
+    deleteTaskById: jest.fn(),
+  }),
+};
 describe('Tasks Controller', () => {
+  let tasksController: TasksController;
   let tasksService: TasksService;
-  let tasksRepository: TaskRepository;
-  let taskMetadataRepository: TaskMetadataRepository;
-  let taskMetadataService: TaskMetadataService;
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
+    const app: TestingModule = await Test.createTestingModule({
       controllers: [TasksController],
-      providers: [
-        PassportModule,
-        TasksService,
-        TaskMetadataRepository,
-        TaskMetadataService,
-        { provide: TaskRepository, useFactory: mockTasksRepository },
-      ],
+      providers: [TasksService, ApiTasksService],
     }).compile();
-    tasksService = moduleRef.get(TasksService);
-    tasksRepository = moduleRef.get(TaskRepository);
-    taskMetadataService = moduleRef.get(TaskMetadataService);
-    taskMetadataRepository = moduleRef.get(TaskMetadataRepository);
+    tasksController = app.get<TasksController>(TasksController);
+    tasksService = app.get<TasksService>(TasksService);
   });
 
-  describe('getTasks', () => {
-    it('calls tasksRepository.getTasks and returns the result', async () => {
-      //   const filterDto = { status: TaskStatus.OPEN, search: 'a' };
-      tasksRepository.getTasks(null, mockUser);
-      const result = await tasksService.getTasks(null, mockUser);
-      // console.log(result);
-
-      // expect(result).toEqual('someValue');
+  describe('TasksController', () => {
+    it('calls TaskService.getTasks and returns the result', async () => {
+      tasksController.getTasks(null, mockUser);
+      expect(tasksService.getTasks).toHaveBeenCalled();
+    });
+    it('calls TaskService.getTaskLimitStartEnd and returns the result', async () => {
+      tasksController.getTaskLimitStartEnd(1, 1, mockUser);
+      expect(tasksService.getTaskLimitStartEnd).toHaveBeenCalled();
+    });
+    it('calls TaskService.getDetailsById and returns the result', async () => {
+      tasksController.getDetailsTask(mockTask, 'someId', {
+        details: 'details',
+        isDeactivated: true,
+      });
+      expect(tasksService.getDetailsById).toHaveBeenCalled();
+    });
+    it('calls TaskService.getTaskById and returns the result', async () => {
+      tasksController.getTaskById('someId', mockUser);
+      expect(tasksService.getTaskById).toHaveBeenCalled();
+    });
+    it('calls TaskService.deleteTaskById and returns the result', async () => {
+      tasksController.deleteTaskById('someId', mockUser);
+      expect(tasksService.deleteTaskById).toHaveBeenCalled();
+    });
+    it('calls TaskService.createTask and returns the result', async () => {
+      tasksController.createTask(mockUser, {
+        description: 'someDesc',
+        title: 'someTitle',
+      });
+      expect(tasksService.createTask).toHaveBeenCalled();
+    });
+    it('calls TaskService.updateStatusById and returns the result', async () => {
+      tasksController.updateStatusById('someId', { status: TaskStatus.DONE });
+      expect(tasksService.updateStatusById).toHaveBeenCalled();
     });
   });
 });

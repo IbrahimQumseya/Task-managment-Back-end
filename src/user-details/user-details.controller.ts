@@ -17,14 +17,14 @@ import {
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { GetUser } from '../auth/get-user.decorator';
+import { User } from '../auth/user.entity';
 import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { UserDetailsService } from './user-details.service';
 @ApiTags('User-Details')
 @Controller('user-details')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('access-token')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 export class UserDetailsController {
