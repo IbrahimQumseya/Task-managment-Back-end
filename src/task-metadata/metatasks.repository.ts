@@ -21,31 +21,31 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
     } else {
       throw new NotFoundException(`Task with ID"${task.id}"not found`);
     }
-
-    // return findMetaTask;
   }
   async getAllTasksDetails(
     filterDto: GetTaskMetadaDto,
     task: Task,
   ): Promise<TaskMetadata[]> {
     const { details, isDeactivated } = filterDto;
+    console.log(isDeactivated);
+
+    const booleanActivated = Boolean(isDeactivated);
+    console.log('-----------------', booleanActivated);
 
     const query = this.createQueryBuilder('taskMetadata');
-    // query.where({ task });
+    query.where({ task });
     if (details) {
       query.andWhere('taskMetadata.details = :details', { details });
     }
-    // if (!isDeactivated) {
-    //   query.andWhere('taskMetadata.isDeactivated = :isDeactivated', {
-    //     isDeactivated,
-    //   });
+    // if (isDeactivated) {
+    //   console.log('-----------------', booleanActivated);
+    //   query.andWhere(`taskMetadata.isDeactivated = ${isDeactivated} `);
     // }
     try {
-      const detailss = await query
+      const details = await query
         .innerJoinAndSelect('taskMetadata.task', 'task')
         .getMany();
-      // console.log('loooooog', detailss);
-      return detailss;
+      return details;
     } catch (error) {
       throw new NotFoundException();
     }
@@ -58,7 +58,7 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
         // .innerJoinAndSelect('taskMetadata.task', 'task')
         .andWhere('taskMetadata.taskId = :taskId', { taskId })
         .getOne();
-        
+
       return details;
     } catch (error) {
       throw new NotFoundException();

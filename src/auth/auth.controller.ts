@@ -11,6 +11,7 @@ import {
   ApiCreatedResponse,
   ApiBearerAuth,
   ApiOkResponse,
+  ApiTags,
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -20,7 +21,7 @@ import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
 import { User } from './user.entity';
 import { GetUser } from './get-user.decorator';
 import { AuthGuard } from '@nestjs/passport';
-
+@ApiTags('User')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

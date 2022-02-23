@@ -9,7 +9,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Task-Management-back-end')
     .setDescription('REST-API-Task-management')
-    .addTag('tasks')
+    .addTag('Task-Management')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
       'access-token',
