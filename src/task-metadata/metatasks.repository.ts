@@ -51,15 +51,15 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
     }
   }
 
-  async getTaskDetail(id: string): Promise<TaskMetadata> {
+  async getTaskDetail(taskId: string): Promise<TaskMetadata> {
     const query = this.createQueryBuilder('taskMetadata');
     try {
-      const detailss = await query
-        .innerJoinAndSelect('taskMetadata.task', 'task')
-        .andWhere('task.id = :id', { id })
+      const details = await query
+        // .innerJoinAndSelect('taskMetadata.task', 'task')
+        .andWhere('taskMetadata.taskId = :taskId', { taskId })
         .getOne();
-      // console.log(detailss);
-      return detailss;
+        
+      return details;
     } catch (error) {
       throw new NotFoundException();
     }
