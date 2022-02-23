@@ -27,6 +27,14 @@ export class TasksController {
   private logger = new Logger('TasksController');
   constructor(private tasksService: TasksService) {}
 
+  @Get('/:start/:end')
+  getTaskLimitStartEnd(
+    @Param('start') start: number,
+    @Param('end') end: number,
+    @GetUser() user: User,
+  ): Promise<Task[]> {
+    return this.tasksService.getTaskLimitStartEnd(start, end, user);
+  }
   @Get('/:id/details')
   getDetailsTask(
     @Query() task: Task,
