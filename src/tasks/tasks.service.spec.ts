@@ -214,7 +214,7 @@ describe('TaskService', () => {
 
       const test = tasksRepository.updateStatusById.mockResolvedValue(
         find.id,
-        TaskStatus.DONE,
+        TaskStatus.IN_PROGRESS,
       );
       const result = await tasksService.updateStatusById(
         'someId',
