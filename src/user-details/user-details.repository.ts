@@ -29,7 +29,7 @@ export class UserDetailsRepository extends Repository<UserDetails> {
   }
 
   async createUserDetailsForUser(
-    user: User,
+    idUser: string,
     createUserDetailsDto: CreateUserDetailsDto,
   ): Promise<UserDetails> {
     const { address, location, number, telephone } = createUserDetailsDto;
@@ -38,8 +38,7 @@ export class UserDetailsRepository extends Repository<UserDetails> {
       location,
       telephone,
       number,
-      id: uuid(),
-      user,
+      user: { id: idUser },
     });
     try {
       await this.save(userDetails);

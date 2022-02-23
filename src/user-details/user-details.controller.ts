@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -34,16 +35,15 @@ export class UserDetailsController {
   getUserDetails(@GetUser() user: User): Promise<UserDetails> {
     return this.userDetailsService.getUserDetails(user);
   }
-  @Post('/createDetails')
+  @Post('/create-details/user/:idUser')
   @ApiCreatedResponse({ description: 'Create User Details' })
   @ApiBody({ type: CreateUserDetailsDto })
   createUserDetailsForUser(
-    // @Param('id') idUser: string,
-    @GetUser() user: User,
+    @Param('idUser') idUser: string,
     @Body() createUserDetailsDto: CreateUserDetailsDto,
   ): Promise<UserDetails> {
     return this.userDetailsService.createUserDetailsForUser(
-      user,
+      idUser,
       createUserDetailsDto,
     );
   }

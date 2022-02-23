@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
@@ -20,13 +21,13 @@ export class UserDetailsService {
   }
 
   async createUserDetailsForUser(
-    user: User,
+    idUser: string,
     createUserDetailsDto: CreateUserDetailsDto,
   ): Promise<UserDetails> {
     // const user = await this.usersRepository.getUser(idUser);
 
     return await this.userDetailsRepository.createUserDetailsForUser(
-      user,
+      idUser,
       createUserDetailsDto,
     );
   }
