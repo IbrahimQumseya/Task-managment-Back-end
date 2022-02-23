@@ -35,11 +35,8 @@ export class TaskMetadataController {
   @Get('/:id/details')
   @ApiOkResponse({ description: 'Get Task details' })
   @ApiParam({ name: 'id', description: 'Task ID', type: String })
-  getDetailsTaskById(
-    @Param('id') taskId: string,
-    @Query() task: Task,
-  ): Promise<TaskMetadata> {
-    return this.tasksMetadataService.getTaskDetail(task, taskId);
+  getDetailsTaskById(@Param('taskId') taskId: string): Promise<TaskMetadata> {
+    return this.tasksMetadataService.getTaskDetail(taskId);
   }
   @Get()
   @ApiOkResponse({ description: 'Get all task details' })
