@@ -20,13 +20,12 @@ export class UserDetailsService {
   }
 
   async createUserDetailsForUser(
-    user: User,
+    userId: string,
     createUserDetailsDto: CreateUserDetailsDto,
   ): Promise<UserDetails> {
-    // const user = await this.usersRepository.getUser(idUser);
-
+    const user = await this.usersRepository.getUser(userId);
     return await this.userDetailsRepository.createUserDetailsForUser(
-      user,
+      userId,
       createUserDetailsDto,
     );
   }
