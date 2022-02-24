@@ -9,6 +9,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { UserRole } from './enum/user-role.enum';
 
 @Entity()
 export class User {
@@ -34,6 +35,9 @@ export class User {
 
   @Column({ default: false })
   isDeactivated: boolean;
+
+  @Column({ default: UserRole.USER })
+  userRole: UserRole;
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];
