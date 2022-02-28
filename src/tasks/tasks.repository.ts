@@ -1,5 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { use } from 'passport';
 import { User } from '../auth/user.entity';
 import { EntityRepository, Index, Repository } from 'typeorm';
@@ -15,18 +19,34 @@ export class TaskRepository extends Repository<Task> {
   private logger = new Logger('TaskRepository', { timestamp: true });
 
   async getTaskById(id: string): Promise<Task> {
-    return this.findOne(id);
+    try {
+      return this.findOne(id);
+    } catch (error) {
+      throw new NotFoundException(`task with id : ${id} not Found`);
+    }
   }
+
   // bug
   async updateStatusById(id: string, status: TaskStatus): Promise<Task> {
+    const query = this.createQueryBuilder();
     const task = await this.getTaskById(id);
-    const query = this.createQueryBuilder('tasks');
-    // query.where({id}).update(status)
+    if (!task) {
+      throw new NotFoundException();
+    }
     try {
-      const status1: TaskStatus = status;
-      task.status = status1;
-      await this.save(task);
-      return task;
+      const toUpperCase: string = status.toUpperCase();
+      const newStatus: TaskStatus = TaskStatus[toUpperCase];
+      const res = await query
+        .update(Task)
+        .set({ status: newStatus })
+        .where('id = :id', { id })
+        .execute();
+      console.log(res);
+
+      if (res.affected === 1) {
+        const task = await this.getTaskById(id);
+        return task;
+      }
     } catch (error) {
       throw new Error('check error');
     }

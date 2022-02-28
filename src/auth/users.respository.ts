@@ -4,9 +4,11 @@ import { User } from './user.entity';
 import {
   ConflictException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
+import { UserRole } from './enum/user-role.enum';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -40,5 +42,36 @@ export class UsersRepository extends Repository<User> {
   async getUser(idUser: string): Promise<User> {
     const user = this.findOne({ where: { id: idUser } });
     return user;
+  }
+
+  async updateUserRole(userId: string, role: UserRole): Promise<User> {
+    const query = this.createQueryBuilder();
+    const toUpperCase: string = role.toUpperCase();
+    const getRole: UserRole = UserRole[toUpperCase];
+    try {
+      // const updated = await this.update(userId, { role: getRole });
+      const res = await query
+        .update(User)
+        .set({ role: getRole })
+        .where('id =:userId', { userId })
+        .execute();
+
+      if (res.affected === 1) {
+        const user = this.getUser(userId);
+        return user;
+      } else {
+        throw new NotFoundException(`The user doesn't exist`);
+      }
+    } catch (error) {
+      throw new ConflictException('check the enum input');
+    }
+  }
+
+  async getRolesForUser(): Promise<object> {
+    const roleForUsers = Object.keys(UserRole).map((key) => ({
+      Name: key,
+      Role: UserRole[key],
+    }));
+    return roleForUsers;
   }
 }
