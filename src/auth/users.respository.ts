@@ -69,8 +69,8 @@ export class UsersRepository extends Repository<User> {
 
   async getRolesForUser(): Promise<object> {
     const roleForUsers = Object.keys(UserRole).map((key) => ({
-      Name: key,
-      Role: UserRole[key],
+      Role: key.toLowerCase(),
+      // Role: UserRole[key].toLowerCase(),
     }));
     return roleForUsers;
   }
