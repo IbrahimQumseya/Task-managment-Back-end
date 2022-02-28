@@ -8,8 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { ConfigService } from '@nestjs/config';
-import { UserDetailsRepository } from 'src/user-details/user-details.repository';
-import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import { UserDetailsRepository } from '../user-details/user-details.repository';
+import { UserDetails } from '../user-details/entity/user-details.entity';
 
 @Module({
   imports: [

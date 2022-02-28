@@ -36,7 +36,7 @@ export class User {
   @Column({ default: false })
   isDeactivated: boolean;
 
-  @Column({ default: UserRole.USER })
+  @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })

@@ -12,7 +12,7 @@ import { JwtPayload } from './jwt-payload.interface';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
-import { UserDetailsRepository } from 'src/user-details/user-details.repository';
+import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
 
 @Injectable()

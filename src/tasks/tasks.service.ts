@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -26,11 +27,11 @@ export class TasksService {
   }
 
   async getDetailsById(
-    task: Task,
-    id: string,
+    taskId: string,
     filterDto?: GetTaskMetadaDto,
   ): Promise<Task> {
-    return this.taskRepository.getDetailsById(task, id, filterDto);
+    const task = await this.taskRepository.getTaskById(taskId);
+    return this.taskRepository.getDetailsById(task.taskMetadata, filterDto);
   }
 
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
@@ -45,7 +46,7 @@ export class TasksService {
     return found;
   }
   async deleteTaskById(id: string, user: User): Promise<void> {
-    const task = await this.taskRepository.findOne({ id, user });
+    const task = await this.taskRepository.getTaskById(id);
     const deletedTask = await this.taskMetadataTask.deleteSelectedTask(task);
   }
   async updateStatusById(id: string, status: TaskStatus): Promise<Task> {

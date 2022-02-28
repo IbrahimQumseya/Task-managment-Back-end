@@ -39,7 +39,7 @@ export class TasksController {
   private logger = new Logger('TasksController');
   constructor(private tasksService: TasksService) {}
   //doing dto for skip and bring <--------------------------
-  @Get('/:skip/:bring')
+  @Get('/limit/:skip/:bring')
   @ApiOkResponse({ description: 'Get tasks by limit' })
   @ApiParam({
     name: 'skip',
@@ -58,24 +58,27 @@ export class TasksController {
     @Param('bring') bring: number,
     @GetUser() user: User,
   ): Promise<Task[]> {
-    return this.tasksService.getTaskLimitStartEnd(skip, bring, user);
+    return this.tasksService.getTaskLimitStartEnd(
+      Number(skip),
+      Number(bring),
+      user,
+    );
   }
-
-  @Get('/:id/details')
-  @ApiOkResponse({ description: 'Get Task details' })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-    description: 'Task ID',
-  })
-  getDetailsTask(
-    @Query() task: Task,
-    @Param('id') id: string,
-    @Query() filterDto: GetTaskMetadaDto,
-  ): Promise<Task> {
-    return this.tasksService.getDetailsById(task, id, filterDto);
-  }
+  // not working!!
+  // @Get('/:id/details')
+  // @ApiOkResponse({ description: 'Get Task details' })
+  // @ApiParam({
+  //   name: 'taskId',
+  //   type: String,
+  //   required: true,
+  //   description: 'Task ID',
+  // })
+  // getDetailsTask(
+  //   @Param('taskId') taskId: string,
+  //   @Query() filterDto?: GetTaskMetadaDto,
+  // ): Promise<Task> {
+  //   return this.tasksService.getDetailsById(taskId, filterDto);
+  // }
 
   @Get()
   @ApiOkResponse({ description: 'Get all the tasks for a user' })
@@ -132,6 +135,7 @@ export class TasksController {
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
   ): Promise<Task> {
     const { status } = updateTaskStatusDto;
+    
     return this.tasksService.updateStatusById(id, status);
   }
 }
