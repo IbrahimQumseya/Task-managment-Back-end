@@ -5,7 +5,6 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
