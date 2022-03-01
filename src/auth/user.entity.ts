@@ -33,6 +33,9 @@ export class User {
   @Column({ default: false })
   isDeactivated: boolean;
 
+  @Column({ nullable: true })
+  profileImage: string;
+
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];
 

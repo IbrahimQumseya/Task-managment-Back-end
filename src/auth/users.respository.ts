@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable prettier/prettier */
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from './user.entity';
 import {
   ConflictException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
+import { join } from 'path';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -37,8 +40,35 @@ export class UsersRepository extends Repository<User> {
       }
     }
   }
+
   async getUser(idUser: string): Promise<User> {
     const user = this.findOne({ where: { id: idUser } });
     return user;
+  }
+
+  async updateOne(userId: string, imagePath: string): Promise<User> {
+    try {
+      const query = await this.createQueryBuilder()
+        .update(User)
+        .set({ profileImage: imagePath })
+        .where({ id: userId })
+        .execute();
+      if (query.affected === 1) {
+        const user = await this.getUser(userId);
+        return user;
+      } else {
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getProfileImage(imageName: string, res): Promise<Object> {
+    
+    const response = res.sendFile(
+      join(process.cwd(), 'uploads/profileImages/' + imageName),
+    );
+    return response;
   }
 }

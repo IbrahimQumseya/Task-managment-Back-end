@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import {
   ConflictException,
   Injectable,
@@ -24,9 +25,19 @@ export class AuthService {
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
   ) {}
+
+  async getProfileImage(imageName: string, res): Promise<Object> {
+    return this.userRepository.getProfileImage(imageName, res);
+  }
+
+  async updateOne(userId: string, imagePath: string): Promise<User> {
+    return this.userRepository.updateOne(userId, imagePath);
+  }
+
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
     return this.userRepository.createUser(authCredentialsDto);
   }
+
   async signIn(
     authCredentialsDtoL: AuthSignInCredentialsDto,
   ): Promise<{ accessToken: string }> {
@@ -42,6 +53,7 @@ export class AuthService {
       throw new UnauthorizedException('Please check you login credentials');
     }
   }
+
   async updateUser(
     user: User,
     updateUserDetailsDto: UpdateUserDetailsDto,
