@@ -10,6 +10,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { join } from 'path';
+import fs from 'fs';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -64,8 +65,8 @@ export class UsersRepository extends Repository<User> {
     }
   }
 
-  async getProfileImage(imageName: string, res): Promise<Object> {
-    
+  async getProfileImage(user: User, res): Promise<Object> {
+    const imageName = user.profileImage;
     const response = res.sendFile(
       join(process.cwd(), 'uploads/profileImages/' + imageName),
     );

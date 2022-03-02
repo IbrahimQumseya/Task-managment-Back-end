@@ -15,6 +15,7 @@ import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
 import { UserDetailsRepository } from 'src/user-details/user-details.repository';
 import { User } from './user.entity';
+import * as fs from 'fs';
 
 @Injectable()
 export class AuthService {
@@ -26,13 +27,7 @@ export class AuthService {
     private userDetailsRepository: UserDetailsRepository,
   ) {}
 
-  async getProfileImage(imageName: string, res): Promise<Object> {
-    return this.userRepository.getProfileImage(imageName, res);
-  }
 
-  async updateOne(userId: string, imagePath: string): Promise<User> {
-    return this.userRepository.updateOne(userId, imagePath);
-  }
 
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
     return this.userRepository.createUser(authCredentialsDto);
@@ -54,31 +49,5 @@ export class AuthService {
     }
   }
 
-  async updateUser(
-    user: User,
-    updateUserDetailsDto: UpdateUserDetailsDto,
-  ): Promise<User> {
-    const userDetails = await this.userDetailsRepository.getUserDetails(user);
-    const getUser = await this.userRepository.getUser(user.id);
-    const { firstName, lastName, address, location, telephone } =
-      updateUserDetailsDto;
-    getUser.firstName = firstName;
-    getUser.lastName = lastName;
-
-    if (!userDetails) {
-      throw new ConflictException('The user Doesnt have details');
-    } else {
-      userDetails.address = address;
-      userDetails.location = location;
-      userDetails.telephone = Number(telephone);
-      getUser.userDetails = userDetails;
-    }
-    try {
-      await this.userRepository.save(getUser);
-      await this.userDetailsRepository.save(userDetails);
-      return getUser;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
+  
 }
