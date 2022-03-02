@@ -27,7 +27,9 @@ export class AuthService {
     private userDetailsRepository: UserDetailsRepository,
   ) {}
 
-
+  // public async getUserFromAuthenticationToken(token: string) {
+  //   const payload: JwtPayload = this.jwtService.verify
+  // }
 
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
     return this.userRepository.createUser(authCredentialsDto);
@@ -48,6 +50,4 @@ export class AuthService {
       throw new UnauthorizedException('Please check you login credentials');
     }
   }
-
-  
 }

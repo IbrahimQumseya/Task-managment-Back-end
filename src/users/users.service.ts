@@ -9,6 +9,9 @@ import { User } from 'src/auth/user.entity';
 import { UsersRepository } from 'src/auth/users.respository';
 import { UserDetailsRepository } from 'src/user-details/user-details.repository';
 import * as fs from 'fs';
+import { JwtPayload } from 'src/auth/jwt-payload.interface';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
@@ -18,6 +21,16 @@ export class UsersService {
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
   ) {}
+
+  public async getUserFromAuthenticationToken(token: string): Promise<User> {
+    return new User();
+    //   const payload: JwtPayload = this.jwtService.verify(token, {
+    //     secret: this.configService.get('JWT_SECRECT'),
+    //   });
+    //   if (payload.username) {
+    //     return this.userRepository.findOne({ username: payload.username });
+    //   }
+  }
 
   async getProfileImage(user: User, res): Promise<Object> {
     return this.userRepository.getProfileImage(user, res);

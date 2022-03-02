@@ -5,6 +5,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersRepository } from 'src/auth/users.respository';
 import { UserDetailsRepository } from 'src/user-details/user-details.repository';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [

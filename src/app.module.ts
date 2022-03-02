@@ -6,7 +6,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
+import { ChatModule } from './chat/chat.module';
 import { UsersModule } from './users/users.module';
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { UsersModule } from './users/users.module';
     TaskMetadataModule,
     UserDetailsModule,
     UsersModule,
+    ChatModule,
   ],
+  providers: [ChatGateway],
 })
 export class AppModule {}
