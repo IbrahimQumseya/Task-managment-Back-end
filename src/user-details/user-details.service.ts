@@ -23,7 +23,6 @@ export class UserDetailsService {
     userId: string,
     createUserDetailsDto: CreateUserDetailsDto,
   ): Promise<UserDetails> {
-    const user = await this.usersRepository.getUser(userId);
     return await this.userDetailsRepository.createUserDetailsForUser(
       userId,
       createUserDetailsDto,

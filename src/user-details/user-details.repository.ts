@@ -10,6 +10,7 @@ import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { v4 as uuid } from 'uuid';
 import { UpdateUserDetailsDto } from 'src/auth/dto/updateUser-userDetails.dto';
+import { logger } from 'src/logger/logger.winston';
 
 @EntityRepository(UserDetails)
 export class UserDetailsRepository extends Repository<UserDetails> {
@@ -22,8 +23,16 @@ export class UserDetailsRepository extends Repository<UserDetails> {
           id,
         })
         .getOne();
+      logger.log(
+        'verbose',
+        `getting user Details of username of ${user.username}   , Success!`,
+      );
       return details;
     } catch (error) {
+      logger.log(
+        'error',
+        `getting user Details of username of ${user.username} "${error}"   , FailED!`,
+      );
       throw new NotFoundException();
     }
   }
@@ -42,11 +51,23 @@ export class UserDetailsRepository extends Repository<UserDetails> {
     });
     try {
       await this.save(userDetails);
+      logger.log(
+        'verbose',
+        `Create user Details of user of  ID ${userId}   , Success!`,
+      );
       return userDetails;
     } catch (error) {
       if (error.code === '23505') {
+        logger.error(
+          'error',
+          `Create user Details of user of  ID ${userId} "error : ""User Details already exists""   , Failed!`,
+        );
         throw new ConflictException('User Details already exists');
       } else {
+        logger.error(
+          'error',
+          `Create user Details of user of  ID ${userId} "error : ""${error}""   , Failed!`,
+        );
         throw new InternalServerErrorException();
       }
     }

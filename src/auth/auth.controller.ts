@@ -21,6 +21,7 @@ import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
 import { User } from './user.entity';
 import { GetUser } from './get-user.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { logger } from 'src/logger/logger.winston';
 @ApiTags('User')
 @Controller('auth')
 export class AuthController {
@@ -32,6 +33,7 @@ export class AuthController {
   signUp(
     @Body() authCredentialsDto: AuthSignUpCredentialsDto,
   ): Promise<string> {
+
     return this.authService.signUp(authCredentialsDto);
   }
 

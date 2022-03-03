@@ -22,6 +22,7 @@ import { User } from 'src/auth/user.entity';
 import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { UserDetailsService } from './user-details.service';
+
 @ApiTags('User-Details')
 @Controller('user-details')
 @UseGuards(AuthGuard())
@@ -35,6 +36,7 @@ export class UserDetailsController {
   getUserDetails(@GetUser() user: User): Promise<UserDetails> {
     return this.userDetailsService.getUserDetails(user);
   }
+  
   @Post('/create-details/user/:userId')
   @ApiCreatedResponse({ description: 'Create User Details' })
   @ApiBody({ type: CreateUserDetailsDto })

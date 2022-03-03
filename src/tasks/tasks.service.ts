@@ -10,6 +10,7 @@ import { TaskMetadataRepository } from 'src/task-metadata/metatasks.repository';
 import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
 import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
 import { createQueryBuilder } from 'typeorm';
+import { logger } from 'src/logger/logger.winston';
 
 @Injectable()
 export class TasksService {
@@ -40,20 +41,22 @@ export class TasksService {
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     return this.taskRepository.getTasks(filterDto, user);
   }
+
   async getTaskById(id: string, user: User): Promise<Task> {
     const found = await this.taskRepository.findOne({ where: { id, user } });
 
     if (!found) {
+      logger.log('error', `Task with ID "${id}" not Found`);
       throw new NotFoundException(`Task with ID "${id}" not Found`);
     }
     return found;
   }
+
   async deleteTaskById(id: string, user: User): Promise<void> {
-    const task = this.taskRepository.findOne({ id, user });
-    const deletedTask = await this.taskMetadataTask.deleteSelectedTask(
-      await task,
-    );
+    const task = await this.taskRepository.getTaskById(id);
+    const deletedTask = await this.taskMetadataTask.deleteSelectedTask(task);
   }
+
   async updateStatusById(
     id: string,
     status: TaskStatus,
@@ -64,6 +67,7 @@ export class TasksService {
     await this.taskRepository.save(task);
     return task;
   }
+  
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const task = await this.taskRepository.createTask(createTaskDto, user);
     const taskMetadata = await this.taskMetadataTask.createMetadataTask(

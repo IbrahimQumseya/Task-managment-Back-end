@@ -1,5 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { use } from 'passport';
 import { User } from '../auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
@@ -8,13 +12,18 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
+import { logger } from './../logger/logger.winston';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
-  private logger = new Logger('TaskRepository', { timestamp: true });
-
   async getTaskById(id: string): Promise<Task> {
-    return this.findOne(id);
+    try {
+      const found = await this.findOne(id);
+      return found;
+    } catch (error) {
+      logger.log('error', `the user is not found "${error}"`);
+      throw new NotFoundException(`the user is not found "${id}"`);
+    }
   }
 
   async getTaskLimitStartEnd(
@@ -22,12 +31,13 @@ export class TaskRepository extends Repository<Task> {
     end: number,
     user: User,
   ): Promise<Task[]> {
-    const query = this.createQueryBuilder('task');
-    query.where({ user }).skip(start).take(end);
+    const query = this.createQueryBuilder();
     try {
-      const task = query.getMany();
-      return task;
+      query.where({ user }).skip(start).take(end);
+      const tasks = query.getMany();
+      return tasks;
     } catch (error) {
+      logger.log('error', `the tasks are not found "${error}"`);
       throw new Error(error);
     }
   }
@@ -60,32 +70,7 @@ export class TaskRepository extends Repository<Task> {
       throw new InternalServerErrorException();
     }
   }
-  // async getMetadataTask(
-  //   filterDto: GetTaskMetadaDto,
-  //   task: Task,
-  //   user: User,
-  // ): Promise<TaskMetadata[]> {
-  //   const { isDeactivated, details } = filterDto;
-  //   const query = this.createQueryBuilder('taskmetadata');
-  //   query.where({ user });
-  //   if (details) {
-  //     query.andWhere('taskmetadata.details = :details', { details: details });
-  //   }
-  //   if (isDeactivated) {
-  //     query.andWhere('taskmetadata.isDeactivated = :isDeactivated', {
-  //       isDeactivated: isDeactivated,
-  //     });
-  //   }
 
-  //   try {
-  //     const metaTask = await query
-  //       .innerJoinAndSelect('taskmetadata.task', 'task')
-  //       .getMany();
-  //     return metaTask;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException();
-  //   }
-  // }
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
@@ -102,9 +87,6 @@ export class TaskRepository extends Repository<Task> {
       );
     }
     try {
-      // const metaTask = await query
-      //   .innerJoinAndSelect('task.metadata', 'metadata')
-      //   .getMany();
       const tasks = await query
         .innerJoinAndSelect('task.user', 'user')
         .innerJoinAndSelect(
@@ -113,15 +95,14 @@ export class TaskRepository extends Repository<Task> {
           "taskMetadata.isDeactivated= 'true'",
         )
         .getMany();
-      // console.log(tasks);
 
       return tasks;
     } catch (error) {
-      this.logger.error(
-        `Faild to get tasks for user "${use.name}". Filter: ${JSON.stringify(
-          filterDto,
-        )}`,
-        error.stak,
+      logger.log(
+        'error',
+        `Faild to get tasks for user "${
+          user.username
+        }". Filter: ${JSON.stringify(filterDto)} "${error}"`,
       );
       throw new InternalServerErrorException();
     }
@@ -134,8 +115,11 @@ export class TaskRepository extends Repository<Task> {
       status: TaskStatus.OPEN,
       user,
     });
-    await this.save(task);
-    return task;
+    try {
+      await this.save(task);
+      return task;
+    } catch (error) {
+      logger.log('error', `couldn't save the Task "${error}"`);
+    }
   }
-
 }
