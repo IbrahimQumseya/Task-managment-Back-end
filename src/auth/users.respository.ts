@@ -65,9 +65,9 @@ export class UsersRepository extends Repository<User> {
     }
   }
 
-  async getProfileImage(user: User, res): Promise<Object> {
+  async getProfileImage(user: User, res: any): Promise<Object> {
     const imageName = user.profileImage;
-    const response = res.sendFile(
+    const response: any = res.sendFile(
       join(process.cwd(), 'uploads/profileImages/' + imageName),
     );
     return response;

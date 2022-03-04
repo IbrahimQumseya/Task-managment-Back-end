@@ -19,7 +19,7 @@ export class UsersService {
     private userDetailsRepository: UserDetailsRepository,
   ) {}
 
-  async getProfileImage(user: User, res): Promise<Object> {
+  async getProfileImage(user: User, res: any): Promise<Object> {
     return this.userRepository.getProfileImage(user, res);
   }
 
