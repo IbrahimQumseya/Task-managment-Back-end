@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
+import { PythonModule } from './python/python.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { UserDetailsModule } from './user-details/user-details.module';
     AuthModule,
     TaskMetadataModule,
     UserDetailsModule,
+    PythonModule,
   ],
 })
 export class AppModule {}
