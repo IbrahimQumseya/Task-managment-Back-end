@@ -47,38 +47,5 @@ export class AuthService {
     }
   }
 
-  async updateUser(
-    user: User,
-    updateUserDetailsDto: UpdateUserDetailsDto,
-  ): Promise<User> {
-    const userDetails = await this.userDetailsRepository.getUserDetails(user);
-    const getUser = await this.userRepository.getUser(user.id);
-    const { firstName, lastName, address, location, telephone } =
-      updateUserDetailsDto;
-    getUser.firstName = firstName;
-    getUser.lastName = lastName;
-
-    if (!userDetails) {
-      throw new ConflictException('The user Doesnt have details');
-    } else {
-      userDetails.address = address;
-      userDetails.location = location;
-      userDetails.telephone = Number(telephone);
-      getUser.userDetails = userDetails;
-    }
-    try {
-      await this.userRepository.save(getUser);
-      await this.userDetailsRepository.save(userDetails);
-      return getUser;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-  async updateUserRole(userId: string, role: UserRole): Promise<User> {
-    return this.userRepository.updateUserRole(userId, role);
-  }
-
-  async getRolesForUser(): Promise<object> {
-    return this.userRepository.getRolesForUser();
-  }
+  
 }

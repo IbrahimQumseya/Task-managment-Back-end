@@ -17,6 +17,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOkResponse,
+  ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -27,7 +28,8 @@ import { UpdateUserDetailsDto } from 'src/auth/dto/updateUser-userDetails.dto';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { UsersService } from './users.service';
-const path = require('path');
+import * as path from 'path';
+import { UserRole } from 'src/auth/enum/user-role.enum';
 
 export const storage = {
   storage: diskStorage({
@@ -66,13 +68,37 @@ export class UsersController {
   @UseInterceptors(FileInterceptor('file', storage))
   uploadFile(@UploadedFile() file, @Request() req): Promise<User> {
     const imagePath = file.filename;
+
     const user: User = req.user;
-    return this.userService.updateOne(user.id, imagePath);
+    return this.userService.uploadFile(user.id, imagePath);
   }
 
   @Get('/user/profile-image')
   @UseGuards(AuthGuard('jwt'))
   getProfileImage(@GetUser() user: User, @Res() res): Promise<Object> {
     return this.userService.getProfileImage(user, res);
+  }
+
+  @Patch('/user/set-role/user/:userId/role/:role')
+  @ApiOkResponse({ description: 'Update User role ' })
+  @ApiParam({ name: 'userId', type: String, description: 'User ID' })
+  @ApiParam({ name: 'role', enum: UserRole, description: 'User Role' })
+  @ApiBearerAuth('access-token')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @UseGuards(AuthGuard())
+  updateUserRole(
+    @Param('userId') userId: string,
+    @Param('role') role: UserRole,
+  ): Promise<User> {
+    return this.userService.updateUserRole(userId, role);
+  }
+
+  @Get('/user/roles')
+  @ApiOkResponse({ description: 'what roles we have ' })
+  @ApiBearerAuth('access-token')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @UseGuards(AuthGuard())
+  getRolesForUser(): Promise<object> {
+    return this.userService.getRolesForUser();
   }
 }

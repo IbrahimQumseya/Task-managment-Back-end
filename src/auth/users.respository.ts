@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable prettier/prettier */
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from './user.entity';
 import {
@@ -9,13 +7,8 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
-<<<<<<< HEAD
 import { UserRole } from './enum/user-role.enum';
 import { join } from 'path';
-=======
-import { join } from 'path';
-import fs from 'fs';
->>>>>>> 273b29016650c9f55d62ff834353806317eef3ec
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -82,7 +75,7 @@ export class UsersRepository extends Repository<User> {
     }));
     return roleForUsers;
   }
-  
+
   async updateOne(userId: string, imagePath: string): Promise<User> {
     try {
       const query = await this.createQueryBuilder()
