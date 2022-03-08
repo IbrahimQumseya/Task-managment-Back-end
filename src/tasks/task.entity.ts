@@ -21,13 +21,13 @@ export class Task {
   @Column()
   description: string;
 
-  @Column()
+  @Column({ enum: TaskStatus, type:'enum' })
   status: TaskStatus;
 
   @ManyToOne((_type) => User, (user) => user.tasks, { eager: false })
   // @Exclude({ toPlainOnly: true })
   user: User;
 
-  @OneToOne(() => TaskMetadata, taskmetaData => taskmetaData.task)
+  @OneToOne(() => TaskMetadata, (taskmetaData) => taskmetaData.task)
   taskMetadata: TaskMetadata;
 }
