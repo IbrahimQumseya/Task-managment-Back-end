@@ -38,6 +38,9 @@ export class User {
 
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
+  
+  @Column({ nullable: true })
+  profileImage: string;
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];

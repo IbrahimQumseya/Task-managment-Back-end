@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import {
   ConflictException,
   Injectable,
@@ -15,7 +16,6 @@ import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
 import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
 import { UserRole } from './enum/user-role.enum';
-import { async } from 'rxjs';
 
 @Injectable()
 export class AuthService {

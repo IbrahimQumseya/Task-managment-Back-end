@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/ban-types */
 import {
   Body,
   Controller,
@@ -8,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { v4 as uuid } from 'uuid';
 import {
   ApiCreatedResponse,
   ApiBearerAuth,
@@ -17,6 +20,7 @@ import {
   ApiUnauthorizedResponse,
   ApiParam,
 } from '@nestjs/swagger';
+
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';

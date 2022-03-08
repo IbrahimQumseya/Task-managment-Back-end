@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable prettier/prettier */
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -8,7 +9,13 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
+<<<<<<< HEAD
 import { UserRole } from './enum/user-role.enum';
+import { join } from 'path';
+=======
+import { join } from 'path';
+import fs from 'fs';
+>>>>>>> 273b29016650c9f55d62ff834353806317eef3ec
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -39,6 +46,7 @@ export class UsersRepository extends Repository<User> {
       }
     }
   }
+
   async getUser(idUser: string): Promise<User> {
     const user = this.findOne({ where: { id: idUser } });
     return user;
@@ -73,5 +81,31 @@ export class UsersRepository extends Repository<User> {
       // Role: UserRole[key].toLowerCase(),
     }));
     return roleForUsers;
+  }
+  
+  async updateOne(userId: string, imagePath: string): Promise<User> {
+    try {
+      const query = await this.createQueryBuilder()
+        .update(User)
+        .set({ profileImage: imagePath })
+        .where({ id: userId })
+        .execute();
+      if (query.affected === 1) {
+        const user = await this.getUser(userId);
+        return user;
+      } else {
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getProfileImage(user: User, res: any): Promise<Object> {
+    const imageName = user.profileImage;
+    const response: any = res.sendFile(
+      join(process.cwd(), 'uploads/profileImages/' + imageName),
+    );
+    return response;
   }
 }
