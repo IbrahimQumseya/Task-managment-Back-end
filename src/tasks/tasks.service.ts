@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -6,10 +7,8 @@ import { TaskRepository } from './tasks.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
 import { User } from '../auth/user.entity';
-import { TaskMetadataRepository } from 'src/task-metadata/metatasks.repository';
-import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
-import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
-import { createQueryBuilder } from 'typeorm';
+import { TaskMetadataRepository } from '../task-metadata/metatasks.repository';
+import { GetTaskMetadaDto } from '../task-metadata/dto/get-tasks-metadata.dto';
 
 @Injectable()
 export class TasksService {
@@ -18,9 +17,7 @@ export class TasksService {
     private taskRepository: TaskRepository,
     private taskMetadataTask: TaskMetadataRepository,
   ) {}
-  // async getmetaTask(id: string, user: User): Promise<TaskMetadata> {
-  //   return this.taskMetadataTask.getTaskById(id, user);
-  // }
+
   async getTaskLimitStartEnd(
     start: number,
     end: number,
@@ -30,11 +27,11 @@ export class TasksService {
   }
 
   async getDetailsById(
-    task: Task,
-    id: string,
-    filterDto: GetTaskMetadaDto,
+    taskId: string,
+    filterDto?: GetTaskMetadaDto,
   ): Promise<Task> {
-    return this.taskRepository.getDetailsById(task, id, filterDto);
+    const task = await this.taskRepository.getTaskById(taskId);
+    return this.taskRepository.getDetailsById(task.taskMetadata, filterDto);
   }
 
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
@@ -49,20 +46,11 @@ export class TasksService {
     return found;
   }
   async deleteTaskById(id: string, user: User): Promise<void> {
-    const task = this.taskRepository.findOne({ id, user });
-    const deletedTask = await this.taskMetadataTask.deleteSelectedTask(
-      await task,
-    );
+    const task = await this.taskRepository.getTaskById(id);
+    const deletedTask = await this.taskMetadataTask.deleteSelectedTask(task);
   }
-  async updateStatusById(
-    id: string,
-    status: TaskStatus,
-    user: User,
-  ): Promise<Task> {
-    const task = await this.getTaskById(id, user);
-    task.status = status;
-    await this.taskRepository.save(task);
-    return task;
+  async updateStatusById(id: string, status: TaskStatus): Promise<Task> {
+    return this.taskRepository.updateStatusById(id, status);
   }
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const task = await this.taskRepository.createTask(createTaskDto, user);

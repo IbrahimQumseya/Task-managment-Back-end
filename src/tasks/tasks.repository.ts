@@ -1,20 +1,55 @@
 /* eslint-disable prettier/prettier */
-import { InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { use } from 'passport';
 import { User } from '../auth/user.entity';
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Index, Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
+import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
   private logger = new Logger('TaskRepository', { timestamp: true });
 
   async getTaskById(id: string): Promise<Task> {
-    return this.findOne(id);
+    try {
+      return this.findOne(id);
+    } catch (error) {
+      throw new NotFoundException(`task with id : ${id} not Found`);
+    }
+  }
+
+  // bug
+  async updateStatusById(id: string, status: TaskStatus): Promise<Task> {
+    const query = this.createQueryBuilder();
+    const task = await this.getTaskById(id);
+    if (!task) {
+      throw new NotFoundException();
+    }
+    try {
+      const toUpperCase: string = status.toUpperCase();
+      const newStatus: TaskStatus = TaskStatus[toUpperCase];
+      const res = await query
+        .update(Task)
+        .set({ status: newStatus })
+        .where('id = :id', { id })
+        .execute();
+      console.log(res);
+
+      if (res.affected === 1) {
+        const task = await this.getTaskById(id);
+        return task;
+      }
+    } catch (error) {
+      throw new Error('check error');
+    }
   }
 
   async getTaskLimitStartEnd(
@@ -23,23 +58,24 @@ export class TaskRepository extends Repository<Task> {
     user: User,
   ): Promise<Task[]> {
     const query = this.createQueryBuilder('task');
-    query.where({ user }).skip(start).take(end);
+    query.where({ user });
+
     try {
-      const task = query.getMany();
-      return task;
+      query.skip(Number(start)).take(Number(end));
+      const tasks = query.getMany();
+      return tasks;
     } catch (error) {
       throw new Error(error);
     }
   }
 
   async getDetailsById(
-    task: Task,
-    id: string,
-    filterDto: GetTaskMetadaDto,
+    taskMetadata: TaskMetadata,
+    filterDto?: GetTaskMetadaDto,
   ): Promise<Task> {
     const { details, isDeactivated } = filterDto;
-    const query = this.createQueryBuilder('task');
-    query.where({ taskMetadata: id, limit: 1 });
+    const query = this.createQueryBuilder('tasks');
+    query.where({ taskMetadata });
 
     // if (details) {
     //   query.andWhere('taskmetadata.details = :details', { details: details });
@@ -51,41 +87,17 @@ export class TaskRepository extends Repository<Task> {
     // }
 
     try {
-      const detailss = await query
-        .innerJoinAndSelect('task.taskMetadata', 'taskMetadata')
+      const res = await query
+        // .innerJoinAndSelect('tasks.taskMetadata', 'taskMetadata')
         .getOne();
-      return detailss;
+      console.log(res);
+
+      return res;
       //return details;
     } catch (error) {
       throw new InternalServerErrorException();
     }
   }
-  // async getMetadataTask(
-  //   filterDto: GetTaskMetadaDto,
-  //   task: Task,
-  //   user: User,
-  // ): Promise<TaskMetadata[]> {
-  //   const { isDeactivated, details } = filterDto;
-  //   const query = this.createQueryBuilder('taskmetadata');
-  //   query.where({ user });
-  //   if (details) {
-  //     query.andWhere('taskmetadata.details = :details', { details: details });
-  //   }
-  //   if (isDeactivated) {
-  //     query.andWhere('taskmetadata.isDeactivated = :isDeactivated', {
-  //       isDeactivated: isDeactivated,
-  //     });
-  //   }
-
-  //   try {
-  //     const metaTask = await query
-  //       .innerJoinAndSelect('taskmetadata.task', 'task')
-  //       .getMany();
-  //     return metaTask;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException();
-  //   }
-  // }
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
@@ -102,9 +114,6 @@ export class TaskRepository extends Repository<Task> {
       );
     }
     try {
-      // const metaTask = await query
-      //   .innerJoinAndSelect('task.metadata', 'metadata')
-      //   .getMany();
       const tasks = await query
         .innerJoinAndSelect('task.user', 'user')
         .innerJoinAndSelect(
@@ -113,7 +122,6 @@ export class TaskRepository extends Repository<Task> {
           "taskMetadata.isDeactivated= 'true'",
         )
         .getMany();
-      // console.log(tasks);
 
       return tasks;
     } catch (error) {
@@ -137,5 +145,4 @@ export class TaskRepository extends Repository<Task> {
     await this.save(task);
     return task;
   }
-
 }

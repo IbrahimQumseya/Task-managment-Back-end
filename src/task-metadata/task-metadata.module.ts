@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TaskMetadataService } from './task-metadata.service';
 import { TaskMetadataController } from './task-metadata.controller';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskMetadata } from './entity/task-metadata.entity';
 import { TaskMetadataRepository } from './metatasks.repository';
-import { TaskRepository } from 'src/tasks/tasks.repository';
+import { TaskRepository } from '../tasks/tasks.repository';
 
 @Module({
   imports: [

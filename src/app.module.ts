@@ -10,6 +10,7 @@ import { UserDetailsModule } from './user-details/user-details.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: [`.env.stage.${process.env.STAGE}`],
       validationSchema: configValidationSchema,
     }),

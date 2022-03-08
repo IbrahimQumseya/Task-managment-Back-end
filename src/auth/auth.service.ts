@@ -12,8 +12,10 @@ import { JwtPayload } from './jwt-payload.interface';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
-import { UserDetailsRepository } from 'src/user-details/user-details.repository';
+import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
+import { UserRole } from './enum/user-role.enum';
+import { async } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -24,9 +26,11 @@ export class AuthService {
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
   ) {}
+
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
     return this.userRepository.createUser(authCredentialsDto);
   }
+
   async signIn(
     authCredentialsDtoL: AuthSignInCredentialsDto,
   ): Promise<{ accessToken: string }> {
@@ -42,6 +46,7 @@ export class AuthService {
       throw new UnauthorizedException('Please check you login credentials');
     }
   }
+
   async updateUser(
     user: User,
     updateUserDetailsDto: UpdateUserDetailsDto,
@@ -68,5 +73,12 @@ export class AuthService {
     } catch (error) {
       throw new InternalServerErrorException();
     }
+  }
+  async updateUserRole(userId: string, role: UserRole): Promise<User> {
+    return this.userRepository.updateUserRole(userId, role);
+  }
+
+  async getRolesForUser(): Promise<object> {
+    return this.userRepository.getRolesForUser();
   }
 }

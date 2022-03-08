@@ -8,7 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { ConfigService } from '@nestjs/config';
-import { UserDetailsRepository } from 'src/user-details/user-details.repository';
+import { UserDetailsRepository } from '../user-details/user-details.repository';
+import { UserDetails } from '../user-details/entity/user-details.entity';
 
 @Module({
   imports: [
@@ -24,7 +25,11 @@ import { UserDetailsRepository } from 'src/user-details/user-details.repository'
         },
       }),
     }),
-    TypeOrmModule.forFeature([UsersRepository, UserDetailsRepository]),
+    TypeOrmModule.forFeature([
+      UsersRepository,
+      UserDetailsRepository,
+      UserDetails,
+    ]),
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

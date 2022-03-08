@@ -1,8 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/auth/user.entity';
-import { UsersRepository } from 'src/auth/users.respository';
-import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
+import { User } from '../auth/user.entity';
+import { UsersRepository } from '../auth/users.respository';
+import { CreateUserDetailsDto } from './dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { UserDetailsRepository } from './user-details.repository';
 

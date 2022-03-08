@@ -4,12 +4,12 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
+import { CreateUserDetailsDto } from './dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { v4 as uuid } from 'uuid';
-import { UpdateUserDetailsDto } from 'src/auth/dto/updateUser-userDetails.dto';
+import { UpdateUserDetailsDto } from '../auth/dto/updateUser-userDetails.dto';
 
 @EntityRepository(UserDetails)
 export class UserDetailsRepository extends Repository<UserDetails> {
@@ -29,7 +29,7 @@ export class UserDetailsRepository extends Repository<UserDetails> {
   }
 
   async createUserDetailsForUser(
-    userId: string,
+    idUser: string,
     createUserDetailsDto: CreateUserDetailsDto,
   ): Promise<UserDetails> {
     const { address, location, number, telephone } = createUserDetailsDto;
@@ -38,7 +38,7 @@ export class UserDetailsRepository extends Repository<UserDetails> {
       location,
       telephone,
       number,
-      user: { id: userId },
+      user: { id: idUser },
     });
     try {
       await this.save(userDetails);

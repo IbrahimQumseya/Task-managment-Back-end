@@ -17,14 +17,14 @@ import {
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
-import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
+import { GetUser } from '../auth/get-user.decorator';
+import { User } from '../auth/user.entity';
+import { CreateUserDetailsDto } from './dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { UserDetailsService } from './user-details.service';
 @ApiTags('User-Details')
 @Controller('user-details')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('access-token')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 export class UserDetailsController {
@@ -35,15 +35,15 @@ export class UserDetailsController {
   getUserDetails(@GetUser() user: User): Promise<UserDetails> {
     return this.userDetailsService.getUserDetails(user);
   }
-  @Post('/create-details/user/:userId')
+  @Post('/create-details/user/:idUser')
   @ApiCreatedResponse({ description: 'Create User Details' })
   @ApiBody({ type: CreateUserDetailsDto })
   createUserDetailsForUser(
-    @Param('userId') userId: string,
+    @Param('idUser') idUser: string,
     @Body() createUserDetailsDto: CreateUserDetailsDto,
   ): Promise<UserDetails> {
     return this.userDetailsService.createUserDetailsForUser(
-      userId,
+      idUser,
       createUserDetailsDto,
     );
   }
