@@ -28,6 +28,6 @@ export class Task {
   // @Exclude({ toPlainOnly: true })
   user: User;
 
-  @OneToOne(() => TaskMetadata, taskmetaData => taskmetaData.task)
+  @OneToOne(() => TaskMetadata, (taskmetaData) => taskmetaData.task)
   taskMetadata: TaskMetadata;
 }

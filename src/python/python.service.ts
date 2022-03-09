@@ -1,30 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { spawn } from 'child_process';
+import { exec } from 'child_process';
 import { PythonShell } from 'python-shell';
 
 @Injectable()
 export class PythonService {
-  async getPythonScript(): Promise<object> {
+  async getPythonScript(): Promise<any> {
     const dataToSend = ['1', '2', '3'];
-    const python = spawn('python', ['C:/Ibrahim/Vallerry/script.py']);
-    python.stdout.on('data', function (data) {
-      console.log('Pipe data from python script ...');
-      dataToSend.push(data.toString());
-      console.log('pushing');
-      console.log(data.toString());
 
-      return dataToSend;
+    const child = exec('python C:/Ibrahim/Vallerry/script.py');
+    const result = await new Promise<any>((resolve) => {
+      child.on('exit', (data) => {
+        resolve(data);
+      });
     });
 
-    python.on('close', (code) => {
-      console.log(`child process close all stdio with code ${code}`);
-      // send data to browser
-      console.log(dataToSend.join(''));
-      return dataToSend;
-    });
-    console.log(dataToSend);
-    console.log(dataToSend);
-    return dataToSend;
+    return result;
   }
 
   async getPythonScriptShell(): Promise<object> {
