@@ -36,8 +36,8 @@ export class UserDetailsRepository extends Repository<UserDetails> {
     const userDetails = this.create({
       address,
       location,
-      telephone,
-      number,
+      telephone: Number(telephone),
+      number: Number(number),
       user: { id: idUser },
     });
     try {

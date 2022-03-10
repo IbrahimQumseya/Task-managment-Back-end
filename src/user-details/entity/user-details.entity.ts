@@ -17,7 +17,7 @@ export class UserDetails {
   location: string;
 
   @Column()
-  number: string;
+  number: number;
 
   @Column()
   telephone: number;

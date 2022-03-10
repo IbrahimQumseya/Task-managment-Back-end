@@ -46,7 +46,7 @@ export class UsersService {
   ): Promise<User> {
     const userDetails = await this.userDetailsRepository.getUserDetails(user);
     const getUser = await this.userRepository.getUser(user.id);
-    const { firstName, lastName, address, location, telephone } =
+    const { firstName, lastName, address, location, telephone, number } =
       updateUserDetailsDto;
     getUser.firstName = firstName;
     getUser.lastName = lastName;
@@ -57,6 +57,7 @@ export class UsersService {
       userDetails.address = address;
       userDetails.location = location;
       userDetails.telephone = Number(telephone);
+      userDetails.number = Number(number);
       getUser.userDetails = userDetails;
     }
     try {
