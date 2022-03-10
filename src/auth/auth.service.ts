@@ -31,21 +31,42 @@ export class AuthService {
     return this.userRepository.createUser(authCredentialsDto);
   }
 
-  async signIn(
-    authCredentialsDtoL: AuthSignInCredentialsDto,
-  ): Promise<{ accessToken: string }> {
+  async signIn(authCredentialsDtoL: AuthSignInCredentialsDto): Promise<{
+    accessToken: string;
+  }> {
     const { username, password } = authCredentialsDtoL;
     const user = await this.userRepository.findOne({
       username,
     });
     if (user && (await bcrypt.compare(password, user.password))) {
-      const payload: JwtPayload = { username };
+      const {
+        firstName,
+        lastName,
+        email,
+        isDeactivated,
+        role,
+        profileImage,
+        id,
+      } = user;
+      const payload: JwtPayload = {
+        username,
+        user: {
+          id,
+          firstName,
+          lastName,
+          email,
+          role,
+          profileImage,
+          isDeactivated,
+        },
+      };
       const accessToken: string = await this.jwtService.sign(payload);
-      return { accessToken };
+
+      return {
+        accessToken,
+      };
     } else {
       throw new UnauthorizedException('Please check you login credentials');
     }
   }
-
-  
 }
