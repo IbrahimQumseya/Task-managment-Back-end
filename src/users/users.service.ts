@@ -10,6 +10,7 @@ import { UsersRepository } from 'src/auth/users.respository';
 import { UserDetailsRepository } from 'src/user-details/user-details.repository';
 import * as fs from 'fs';
 import { UserRole } from 'src/auth/enum/user-role.enum';
+import { UserDetails } from 'src/user-details/entity/user-details.entity';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +21,10 @@ export class UsersService {
     private userDetailsRepository: UserDetailsRepository,
   ) {}
 
-  async getProfileImage(user: User, res: any): Promise<Object> {
+  async getProfileImage(
+    user: User,
+    res: any,
+  ): Promise<{ response: any; imageName: string }> {
     return this.userRepository.getProfileImage(user, res);
   }
 
@@ -43,7 +47,7 @@ export class UsersService {
   async updateUser(
     user: User,
     updateUserDetailsDto: UpdateUserDetailsDto,
-  ): Promise<User> {
+  ): Promise<UserDetails> {
     const userDetails = await this.userDetailsRepository.getUserDetails(user);
     const getUser = await this.userRepository.getUser(user.id);
     const { firstName, lastName, address, location, telephone, number } =
@@ -63,7 +67,7 @@ export class UsersService {
     try {
       await this.userRepository.save(getUser);
       await this.userDetailsRepository.save(userDetails);
-      return getUser;
+      return userDetails;
     } catch (error) {
       throw new InternalServerErrorException();
     }

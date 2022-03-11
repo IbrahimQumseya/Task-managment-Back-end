@@ -94,11 +94,14 @@ export class UsersRepository extends Repository<User> {
     }
   }
 
-  async getProfileImage(user: User, res: any): Promise<Object> {
-    const imageName = user.profileImage;
+  async getProfileImage(
+    user: User,
+    res: any,
+  ): Promise<{ response: any; imageName: string }> {
+    const imageNameUser = user.profileImage;
     const response: any = res.sendFile(
-      join(process.cwd(), 'uploads/profileImages/' + imageName),
+      join(process.cwd(), 'uploads/profileImages/' + imageNameUser),
     );
-    return response;
+    return { response, imageName: 'uploads/profileImages/' + imageNameUser };
   }
 }

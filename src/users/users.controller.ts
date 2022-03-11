@@ -30,6 +30,7 @@ import { User } from 'src/auth/user.entity';
 import { UsersService } from './users.service';
 import * as path from 'path';
 import { UserRole } from 'src/auth/enum/user-role.enum';
+import { UserDetails } from 'src/user-details/entity/user-details.entity';
 
 export const storage = {
   storage: diskStorage({
@@ -57,7 +58,7 @@ export class UsersController {
   updateUser(
     @GetUser() user: User,
     @Body() updateUserDetailsDto: UpdateUserDetailsDto,
-  ): Promise<User> {
+  ): Promise<UserDetails> {
     return this.userService.updateUser(user, updateUserDetailsDto);
   }
 
@@ -75,7 +76,10 @@ export class UsersController {
 
   @Get('/user/profile-image')
   @UseGuards(AuthGuard('jwt'))
-  getProfileImage(@GetUser() user: User, @Res() res): Promise<Object> {
+  getProfileImage(
+    @GetUser() user: User,
+    @Res() res,
+  ): Promise<{ response: any; imageName: string }> {
     return this.userService.getProfileImage(user, res);
   }
 
