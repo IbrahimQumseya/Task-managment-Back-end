@@ -6,6 +6,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { CreateMetaTaskDto } from './dto/create-metaTask.dto';
 import { GetTaskMetadaDto } from './dto/get-tasks-metadata.dto';
 import { TaskMetadata } from './entity/task-metadata.entity';
+import { logger } from 'src/logger/logger.winston';
 
 @EntityRepository(TaskMetadata)
 export class TaskMetadataRepository extends Repository<TaskMetadata> {
@@ -22,16 +23,12 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
       throw new NotFoundException(`Task with ID"${task.id}"not found`);
     }
   }
+
   async getAllTasksDetails(
     filterDto: GetTaskMetadaDto,
     task: Task,
   ): Promise<TaskMetadata[]> {
     const { details, isDeactivated } = filterDto;
-    console.log(isDeactivated);
-
-    const booleanActivated = Boolean(isDeactivated);
-    console.log('-----------------', booleanActivated);
-
     const query = this.createQueryBuilder('taskMetadata');
     query.where({ task });
     if (details) {
@@ -45,8 +42,20 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
       const details = await query
         .innerJoinAndSelect('taskMetadata.task', 'task')
         .getMany();
+      logger.log(
+        'verbose',
+        `Getting All Task Metadata with filters of  ${JSON.stringify(
+          filterDto,
+        )} , Success!`,
+      );
       return details;
     } catch (error) {
+      logger.log(
+        'error',
+        `Getting All Task Metadata with filters of  ${JSON.stringify(
+          filterDto,
+        )} , FAILED!`,
+      );
       throw new NotFoundException();
     }
   }
@@ -55,13 +64,22 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
     const query = this.createQueryBuilder('taskMetadata');
     try {
       const details = await query
-        // .innerJoinAndSelect('taskMetadata.task', 'task')
         .andWhere('taskMetadata.taskId = :taskId', { taskId })
         .getOne();
 
+      logger.log(
+        'verbose',
+        `Getting Task Metadata of task ID = "${taskId}" , Success!`,
+      );
       return details;
     } catch (error) {
-      throw new NotFoundException();
+      logger.log(
+        'error',
+        `Getting Task Metadata of task ID = "${taskId}" "NotFound" , Failed!`,
+      );
+      throw new NotFoundException(
+        `Getting Task Metadata of task ID = "${taskId}" "NotFound" , Failed!`,
+      );
     }
   }
 
@@ -76,7 +94,12 @@ export class TaskMetadataRepository extends Repository<TaskMetadata> {
       id: uuid(),
       task,
     });
-    await this.save(metaTasks);
-    return metaTasks;
+    try {
+      await this.save(metaTasks);
+      logger.log('verbose', `Create Task Metadata   , Success!`);
+      return metaTasks;
+    } catch (error) {
+      logger.log('error', `Create Task Metadata "ERROR" "${error}"   , Failed!`);
+    }
   }
 }

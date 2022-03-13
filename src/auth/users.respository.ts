@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
+import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
 import { join } from 'path';
 
@@ -30,11 +31,23 @@ export class UsersRepository extends Repository<User> {
     });
     try {
       await this.save(user);
+      logger.log(
+        'verbose',
+        `Signing up a user with name of ${user.username} , Success!`,
+      );
       return 'USER_CREATED';
     } catch (error) {
       if (error.code === '23505') {
+        logger.log(
+          'error',
+          `user already exist with username of : ${user.username} , Failed!`,
+        );
         throw new ConflictException('Username already exists');
       } else {
+        logger.log(
+          'error',
+          `Internal Server Error check user entities ${user.username} , FAILED!`,
+        );
         throw new InternalServerErrorException();
       }
     }
@@ -42,6 +55,10 @@ export class UsersRepository extends Repository<User> {
 
   async getUser(idUser: string): Promise<User> {
     const user = this.findOne({ where: { id: idUser } });
+    if (!user) {
+      logger.log('error', `User with id of ${idUser} Not Found , Failed!`);
+      throw new NotFoundException(`User with id of ${idUser} Not Found`);
+    }
     return user;
   }
 

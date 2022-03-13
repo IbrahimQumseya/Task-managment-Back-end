@@ -22,6 +22,7 @@ import { User } from '../auth/user.entity';
 import { CreateUserDetailsDto } from './dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { UserDetailsService } from './user-details.service';
+
 @ApiTags('User-Details')
 @Controller('user-details')
 @UseGuards(AuthGuard('jwt'))

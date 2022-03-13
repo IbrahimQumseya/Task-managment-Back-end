@@ -23,12 +23,6 @@ import {
 
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
-import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
-import { User } from './user.entity';
-import { GetUser } from './get-user.decorator';
-import { AuthGuard } from '@nestjs/passport';
-import { UpdateUserRoleDto } from './dto/UpdateUserRole.dto';
-import { UserRole } from './enum/user-role.enum';
 @ApiTags('User')
 @Controller('auth')
 export class AuthController {

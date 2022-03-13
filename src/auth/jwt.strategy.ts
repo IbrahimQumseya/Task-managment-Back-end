@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { logger } from 'src/logger/logger.winston';
 import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
 import { UsersRepository } from './users.respository';
@@ -30,8 +31,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       isDeactivated: false,
     });
     if (!user) {
+      logger.error(
+        'error',
+        `Unauthorized with username Of ${username} , Failed!`,
+      );
       throw new UnauthorizedException();
     }
+    logger.log('verbose', `Success with username Of ${username} , Success!`);
     return user;
   }
 }

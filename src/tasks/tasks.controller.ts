@@ -4,7 +4,6 @@ import {
   Controller,
   Delete,
   Get,
-  Logger,
   Param,
   Patch,
   Post,
@@ -19,6 +18,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-statys.dto';
 import { Task } from './task.entity';
+import { logger } from './../logger/logger.winston';
 import { TasksService } from './tasks.service';
 import {
   ApiBearerAuth,
@@ -36,7 +36,6 @@ import {
 @ApiBearerAuth('access-token')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 export class TasksController {
-  private logger = new Logger('TasksController');
   constructor(private tasksService: TasksService) {}
   //doing dto for skip and bring <--------------------------
   @Get('/limit/:skip/:bring')
@@ -86,11 +85,12 @@ export class TasksController {
     @Query() filterDto: GetTasksFilterDto,
     @GetUser() user: User,
   ): Promise<Task[]> {
-    this.logger.verbose(
-      `User "${user.username}" retreiving all tasks. Filters: ${JSON.stringify(
-        filterDto,
-      )}`,
-    );
+    logger.log({
+      level: 'verbose',
+      message: `User "${
+        user.username
+      }" retreiving all tasks. Filters: ${JSON.stringify(filterDto)}`,
+    });
     return this.tasksService.getTasks(filterDto, user);
   }
 
@@ -98,6 +98,10 @@ export class TasksController {
   @ApiOkResponse({ description: 'Get Task By Id for a user' })
   @ApiParam({ name: 'id', type: String, description: 'Enter Task ID' })
   getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Task> {
+    logger.log({
+      level: 'info',
+      message: `user with username of ${user.username} has requested to check task ID of${id}`,
+    });
     return this.tasksService.getTaskById(id, user);
   }
 
@@ -108,6 +112,10 @@ export class TasksController {
     @Param('id') id: string,
     @GetUser() user: User,
   ): Promise<void> {
+    logger.log({
+      level: 'verbose',
+      message: `user with username of ${user.username} has requested to delete task ID of${id}`,
+    });
     return this.tasksService.deleteTaskById(id, user);
   }
 
@@ -118,11 +126,12 @@ export class TasksController {
     @GetUser() user: User,
     @Body() createTaskDto: CreateTaskDto,
   ): Promise<Task> {
-    this.logger.verbose(
-      `User: "${user.username}" creating new task . Data: ${JSON.stringify(
-        createTaskDto,
-      )}`,
-    );
+    logger.log({
+      level: 'verbose',
+      message: `User: "${
+        user.username
+      }" creating new task . Data: ${JSON.stringify(createTaskDto)}`,
+    });
     return this.tasksService.createTask(createTaskDto, user);
   }
 
@@ -133,9 +142,13 @@ export class TasksController {
   updateStatusById(
     @Param('id') id: string,
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
+    @GetUser() user: User,
   ): Promise<Task> {
     const { status } = updateTaskStatusDto;
-    
-    return this.tasksService.updateStatusById(id, status);
+    logger.log({
+      level: 'verbose',
+      message: `user with username of ${user.username} has requested to update task status of "${id}" to ${status}`,
+    });
+    return this.tasksService.updateStatusById(id, status, user);
   }
 }

@@ -1,28 +1,27 @@
 /* eslint-disable prettier/prettier */
 import {
   InternalServerErrorException,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { use } from 'passport';
 import { User } from '../auth/user.entity';
-import { EntityRepository, Index, Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
+import { logger } from './../logger/logger.winston';
 import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
-  private logger = new Logger('TaskRepository', { timestamp: true });
-
   async getTaskById(id: string): Promise<Task> {
     try {
-      return this.findOne(id);
+      const found = await this.findOne(id);
+      return found;
     } catch (error) {
-      throw new NotFoundException(`task with id : ${id} not Found`);
+      logger.log('error', `the user is not found "${error}"`);
+      throw new NotFoundException(`the user is not found "${id}"`);
     }
   }
 
@@ -65,6 +64,7 @@ export class TaskRepository extends Repository<Task> {
       const tasks = query.getMany();
       return tasks;
     } catch (error) {
+      logger.log('error', `the tasks are not found "${error}"`);
       throw new Error(error);
     }
   }
@@ -98,6 +98,7 @@ export class TaskRepository extends Repository<Task> {
       throw new InternalServerErrorException();
     }
   }
+
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
@@ -125,11 +126,11 @@ export class TaskRepository extends Repository<Task> {
 
       return tasks;
     } catch (error) {
-      this.logger.error(
-        `Faild to get tasks for user "${use.name}". Filter: ${JSON.stringify(
-          filterDto,
-        )}`,
-        error.stak,
+      logger.log(
+        'error',
+        `Faild to get tasks for user "${
+          user.username
+        }". Filter: ${JSON.stringify(filterDto)} "${error}"`,
       );
       throw new InternalServerErrorException();
     }
@@ -142,7 +143,11 @@ export class TaskRepository extends Repository<Task> {
       status: TaskStatus.OPEN,
       user,
     });
-    await this.save(task);
-    return task;
+    try {
+      await this.save(task);
+      return task;
+    } catch (error) {
+      logger.log('error', `couldn't save the Task "${error}"`);
+    }
   }
 }
