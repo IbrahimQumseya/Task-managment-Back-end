@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -49,6 +50,7 @@ export const storage = {
 @UseGuards(AuthGuard())
 @Controller('users')
 export class UsersController {
+  logger: Logger = new Logger('users');
   constructor(private userService: UsersService) {}
 
   @Patch('/user/updateUser')
@@ -68,7 +70,9 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file', storage))
   uploadFile(@UploadedFile() file, @Request() req): Promise<User> {
-    const imagePath = file.filename;
+    console.log(file);
+    this.logger.verbose(file);
+    const imagePath = file.filename || file.name;
 
     const user: User = req.user;
     return this.userService.uploadFile(user.id, imagePath);
