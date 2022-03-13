@@ -36,18 +36,18 @@ const warnTransport = {
   maxFiles: '14d',
 };
 
-const verbosetransports = new winston.transports.DailyRotateFile(
+const verboseTransports = new winston.transports.DailyRotateFile(
   verboseTransport,
 );
-const errortransports = new winston.transports.DailyRotateFile(errorTransport);
+const errorTransports = new winston.transports.DailyRotateFile(errorTransport);
 const infoTransports = new winston.transports.DailyRotateFile(infoTransport);
-const warntransports = new winston.transports.DailyRotateFile(warnTransport);
+const warnTransports = new winston.transports.DailyRotateFile(warnTransport);
 
 export const logger = winston.createLogger({
   transports: [
-    verbosetransports,
-    errortransports,
+    verboseTransports,
+    errorTransports,
     infoTransports,
-    warntransports,
+    warnTransports,
   ],
 });

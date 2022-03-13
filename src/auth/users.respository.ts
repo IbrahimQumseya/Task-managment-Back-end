@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from './user.entity';
 import {
@@ -9,6 +8,8 @@ import {
 import * as bcrypt from 'bcrypt';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { logger } from 'src/logger/logger.winston';
+import { UserRole } from './enum/user-role.enum';
+import { join } from 'path';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -59,5 +60,65 @@ export class UsersRepository extends Repository<User> {
       throw new NotFoundException(`User with id of ${idUser} Not Found`);
     }
     return user;
+  }
+
+  async updateUserRole(userId: string, role: UserRole): Promise<User> {
+    const query = this.createQueryBuilder();
+    const toUpperCase: string = role.toUpperCase();
+    const getRole: UserRole = UserRole[toUpperCase];
+    try {
+      // const updated = await this.update(userId, { role: getRole });
+      const res = await query
+        .update(User)
+        .set({ role: getRole })
+        .where('id =:userId', { userId })
+        .execute();
+
+      if (res.affected === 1) {
+        const user = this.getUser(userId);
+        return user;
+      } else {
+        throw new NotFoundException(`The user doesn't exist`);
+      }
+    } catch (error) {
+      throw new ConflictException('check the enum input');
+    }
+  }
+
+  async getRolesForUser(): Promise<object> {
+    const roleForUsers = Object.keys(UserRole).map((key) => ({
+      role: key.toLowerCase(),
+      // Role: UserRole[key].toLowerCase(),
+    }));
+    return roleForUsers;
+  }
+
+  async updateOne(userId: string, imagePath: string): Promise<User> {
+    try {
+      const query = await this.createQueryBuilder()
+        .update(User)
+        .set({ profileImage: imagePath })
+        .where({ id: userId })
+        .execute();
+      if (query.affected === 1) {
+        const user = await this.getUser(userId);
+        return user;
+      } else {
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getProfileImage(
+    user: User,
+    res: any,
+  ): Promise<{ response: any; imageName: string }> {
+    const imageNameUser = user.profileImage;
+    const response: any = res.sendFile(
+      join(process.cwd(), 'uploads/profileImages/' + imageNameUser),
+    );
+    return { response, imageName: 'uploads/profileImages/' + imageNameUser };
   }
 }

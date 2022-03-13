@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import {
   ConflictException,
   Injectable,
@@ -12,9 +13,10 @@ import { JwtPayload } from './jwt-payload.interface';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
-import { UserDetailsRepository } from 'src/user-details/user-details.repository';
+import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
 import { logger } from 'src/logger/logger.winston';
+import { UserRole } from './enum/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -25,18 +27,40 @@ export class AuthService {
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
   ) {}
+
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
     return this.userRepository.createUser(authCredentialsDto);
   }
-  async signIn(
-    authCredentialsDtoL: AuthSignInCredentialsDto,
-  ): Promise<{ accessToken: string }> {
+
+  async signIn(authCredentialsDtoL: AuthSignInCredentialsDto): Promise<{
+    accessToken: string;
+  }> {
     const { username, password } = authCredentialsDtoL;
     const user = await this.userRepository.findOne({
       username,
     });
     if (user && (await bcrypt.compare(password, user.password))) {
-      const payload: JwtPayload = { username };
+      const {
+        firstName,
+        lastName,
+        email,
+        isDeactivated,
+        role,
+        profileImage,
+        id,
+      } = user;
+      const payload: JwtPayload = {
+        username,
+        user: {
+          id,
+          firstName,
+          lastName,
+          email,
+          role,
+          profileImage,
+          isDeactivated,
+        },
+      };
       const accessToken: string = await this.jwtService.sign(payload);
       logger.log('verbose', `Signing in ${user.username} , Success!`);
       return { accessToken };

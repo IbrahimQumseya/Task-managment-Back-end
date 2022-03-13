@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Logger, NotFoundException } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import { Task } from 'src/tasks/task.entity';
+import { Task } from '../tasks/task.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateMetaTaskDto } from './dto/create-metaTask.dto';
 import { GetTaskMetadaDto } from './dto/get-tasks-metadata.dto';

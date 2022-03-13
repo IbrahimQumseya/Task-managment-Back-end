@@ -21,4 +21,8 @@ export class UpdateUserDetailsDto {
   @IsString()
   @ApiProperty({ type: String, description: 'Telephone' })
   telephone: string;
+
+  @IsString()
+  @ApiProperty({ type: String, description: 'Number' })
+  number: string;
 }

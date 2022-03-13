@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { User } from 'src/auth/user.entity';
+import { User } from '../../auth/user.entity';
 import {
   Column,
   Entity,
@@ -7,7 +7,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Entity()
 export class UserDetails {
@@ -18,7 +17,7 @@ export class UserDetails {
   location: string;
 
   @Column()
-  number: string;
+  number: number;
 
   @Column()
   telephone: number;

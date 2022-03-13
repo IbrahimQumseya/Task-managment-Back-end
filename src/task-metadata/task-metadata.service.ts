@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Task } from 'src/tasks/task.entity';
-import { TaskRepository } from 'src/tasks/tasks.repository';
+import { Task } from '../tasks/task.entity';
+import { TaskRepository } from '../tasks/tasks.repository';
 import { CreateMetaTaskDto } from './dto/create-metaTask.dto';
 import { GetTaskMetadaDto } from './dto/get-tasks-metadata.dto';
 import { TaskMetadata } from './entity/task-metadata.entity';

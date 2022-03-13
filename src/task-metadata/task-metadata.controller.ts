@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Task } from 'src/tasks/task.entity';
+import { Task } from '../tasks/task.entity';
 import { CreateMetaTaskDto } from './dto/create-metaTask.dto';
 import { GetTaskMetadaDto } from './dto/get-tasks-metadata.dto';
 import { TaskMetadata } from './entity/task-metadata.entity';
@@ -25,16 +25,16 @@ import {
 } from '@nestjs/swagger';
 @ApiTags('Task-Metadata')
 @Controller('task-metadata')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('access-token')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 export class TaskMetadataController {
   private logger = new Logger('TasksController');
   constructor(private tasksMetadataService: TaskMetadataService) {}
 
-  @Get('/:id/details')
+  @Get('/:taskId/details')
   @ApiOkResponse({ description: 'Get Task details' })
-  @ApiParam({ name: 'id', description: 'Task ID', type: String })
+  @ApiParam({ name: 'taskId', description: 'Task ID', type: String })
   getDetailsTaskById(@Param('taskId') taskId: string): Promise<TaskMetadata> {
     return this.tasksMetadataService.getTaskDetail(taskId);
   }

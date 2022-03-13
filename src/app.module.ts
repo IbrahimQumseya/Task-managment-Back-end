@@ -6,10 +6,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: [`.env.stage.${process.env.STAGE}`],
       validationSchema: configValidationSchema,
     }),
@@ -40,6 +42,7 @@ import { UserDetailsModule } from './user-details/user-details.module';
     AuthModule,
     TaskMetadataModule,
     UserDetailsModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

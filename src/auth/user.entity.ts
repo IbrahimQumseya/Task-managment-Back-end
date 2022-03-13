@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Task } from '../tasks/task.entity';
+import { UserDetails } from '../user-details/entity/user-details.entity';
 import {
   Entity,
   Column,
@@ -8,7 +9,8 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import { UserRole } from './enum/user-role.enum';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -16,6 +18,7 @@ export class User {
 
   @Column({ unique: true })
   username: string;
+
   // delete nullable:true
   @Column({ nullable: true })
   firstName: string;
@@ -32,6 +35,12 @@ export class User {
 
   @Column({ default: false })
   isDeactivated: boolean;
+
+  @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
+  role: UserRole;
+  
+  @Column({ nullable: true })
+  profileImage: string;
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];

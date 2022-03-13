@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -19,9 +20,7 @@ export class TasksService {
     private taskRepository: TaskRepository,
     private taskMetadataTask: TaskMetadataRepository,
   ) {}
-  // async getmetaTask(id: string, user: User): Promise<TaskMetadata> {
-  //   return this.taskMetadataTask.getTaskById(id, user);
-  // }
+
   async getTaskLimitStartEnd(
     start: number,
     end: number,
@@ -31,11 +30,11 @@ export class TasksService {
   }
 
   async getDetailsById(
-    task: Task,
-    id: string,
-    filterDto: GetTaskMetadaDto,
+    taskId: string,
+    filterDto?: GetTaskMetadaDto,
   ): Promise<Task> {
-    return this.taskRepository.getDetailsById(task, id, filterDto);
+    const task = await this.taskRepository.getTaskById(taskId);
+    return this.taskRepository.getDetailsById(task.taskMetadata, filterDto);
   }
 
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
