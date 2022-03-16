@@ -69,10 +69,13 @@ export class UsersController {
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file', storage))
-  uploadFile(@UploadedFile() file, @Request() req): Promise<User> {
+  uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req,
+  ): Promise<User> {
     console.log(file);
     this.logger.verbose(file);
-    const imagePath = file.filename || file.name;
+    const imagePath = file.filename;
 
     const user: User = req.user;
     return this.userService.uploadFile(user.id, imagePath);
