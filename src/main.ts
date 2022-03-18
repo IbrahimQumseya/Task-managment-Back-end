@@ -4,7 +4,6 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TransformInterceptor } from './transform.interceptor';
 
-
 async function bootstrap() {
   const consoleLogger = new Logger();
   const app = await NestFactory.create(AppModule);

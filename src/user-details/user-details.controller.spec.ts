@@ -1,5 +1,5 @@
-/* eslint-disable prettier/prettier */
 import { Test, TestingModule } from '@nestjs/testing';
+import { UserRole } from '../auth/enum/user-role.enum';
 import { UserDetailsController } from './user-details.controller';
 import { UserDetailsRepository } from './user-details.repository';
 import { UserDetailsService } from './user-details.service';
@@ -10,7 +10,7 @@ const mockUser = {
   tasks: [],
   userDetails: {
     location: '',
-    number: '',
+    number: 123,
     telephone: 156489,
     address: '',
     id: '',
@@ -21,6 +21,8 @@ const mockUser = {
   id: '',
   email: '',
   isDeactivated: true,
+  role: UserRole.USER,
+  profileImage: '',
 };
 const ApiUserDetailsService = {
   provide: UserDetailsService,

@@ -29,6 +29,7 @@ import {
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
 //jwtStartegy
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -140,15 +141,15 @@ export class TasksController {
   @ApiBody({ type: UpdateTaskStatusDto })
   @ApiParam({ name: 'id', type: String, description: 'Enter Task ID' })
   updateStatusById(
-    @Param('id') id: string,
+    @Param('id') taskId: string,
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
     @GetUser() user: User,
   ): Promise<Task> {
     const { status } = updateTaskStatusDto;
     logger.log({
       level: 'verbose',
-      message: `user with username of ${user.username} has requested to update task status of "${id}" to ${status}`,
+      message: `user with username of ${user.username} has requested to update task status of "${taskId}" to ${status}`,
     });
-    return this.tasksService.updateStatusById(id, status, user);
+    return this.tasksService.updateStatusById(taskId, status, user);
   }
 }

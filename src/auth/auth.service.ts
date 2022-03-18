@@ -15,7 +15,7 @@ import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { UpdateUserDetailsDto } from './dto/updateUser-userDetails.dto';
 import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
-import { logger } from 'src/logger/logger.winston';
+import { logger } from '../logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
 
 @Injectable()

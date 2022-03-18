@@ -5,13 +5,14 @@ import { TaskStatus } from '../tasks/task-status.enum';
 import { TaskMetadataRepository } from './metatasks.repository';
 import { TaskMetadataController } from './task-metadata.controller';
 import { TaskMetadataService } from './task-metadata.service';
+import { UserRole } from '../auth/enum/user-role.enum';
 const mockUser = {
   username: 'user12',
   password: 'hanna121212!S',
   tasks: [],
   userDetails: {
     location: '',
-    number: '',
+    number: 2341,
     telephone: 156489,
     address: '',
     id: '',
@@ -22,6 +23,8 @@ const mockUser = {
   id: '',
   email: '',
   isDeactivated: true,
+  role: UserRole.USER,
+  profileImage: '',
 };
 const mockTask = {
   title: 'TestTitle',

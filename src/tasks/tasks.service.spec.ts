@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Test } from '@nestjs/testing';
 import { UserDetails } from '../user-details/entity/user-details.entity';
 import { TaskMetadataRepository } from '../task-metadata/metatasks.repository';
@@ -9,6 +8,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { UserRole } from '../auth/enum/user-role.enum';
 
 const mockTasksRepository = () => ({
   getTasks: jest.fn(),
@@ -22,6 +22,7 @@ const mockTasksRepository = () => ({
 const mockTasksMetadataRepository = () => ({
   createMetadataTask: jest.fn(),
   deleteSelectedTask: jest.fn(),
+  getTaskDetail: jest.fn(),
 });
 // const taskMetadata = {
 //   id: 'soomeId',
@@ -35,7 +36,7 @@ const someUser = {
   tasks: [],
   userDetails: {
     location: '',
-    number: '',
+    number: 345,
     telephone: 156489,
     address: '',
     id: '',
@@ -46,6 +47,8 @@ const someUser = {
   id: '',
   email: '',
   isDeactivated: true,
+  role: UserRole.USER,
+  profileImage: '',
 };
 
 const mockUser = {
@@ -54,7 +57,7 @@ const mockUser = {
   tasks: [],
   userDetails: {
     location: 'asd',
-    number: 'asd',
+    number: 342,
     telephone: 156489,
     address: 'asd',
     id: 'asd',
@@ -65,11 +68,13 @@ const mockUser = {
   id: 'asdd',
   email: 'asd',
   isDeactivated: true,
+  role: UserRole.USER,
+  profileImage: '',
 };
 const mockTask = {
   title: 'TestTitle',
   description: 'Test desc',
-  id: 'someId',
+  id: '5f8b7365-50b9-48cf-a6dc-e58a9f54e2e2',
   status: TaskStatus.OPEN,
   taskMetadata: {
     id: 'soomeId',
@@ -172,14 +177,16 @@ describe('TaskService', () => {
 
   describe('getDetailsById', () => {
     it('get TaskRepository.getDetailsById and return a value', async () => {
-      const details = tasksRepository.getDetailsById.mockResolvedValue(
+      const details = taskMetadataRepository.getTaskDetail.mockResolvedValue(
         mockTask,
         'someid',
         null,
       );
 
-      const result = await tasksService.getDetailsById(mockTask, 'id', null);
-      expect(result).toBe(mockTask);
+      const result = await tasksService.getDetailsById('someid', null);
+      console.log(result);
+
+      expect(result).toBe(mockTask.taskMetadata);
     });
 
     // it('get TaskRepository.getDetailsById and handle throw error', async () => {
@@ -211,16 +218,16 @@ describe('TaskService', () => {
     it('upDate Status by Id and return new task', async () => {
       tasksRepository.findOne.mockResolvedValue(mockTask);
       const find = await tasksService.getTaskById('someId', mockUser);
-
       const test = tasksRepository.updateStatusById.mockResolvedValue(
         find.id,
         TaskStatus.IN_PROGRESS,
       );
+      console.log(find);
       const result = await tasksService.updateStatusById(
-        'someId',
+        find.id,
         TaskStatus.IN_PROGRESS,
+        mockUser,
       );
-      console.log(result);
       expect(result).toBe(find.id);
     });
   });

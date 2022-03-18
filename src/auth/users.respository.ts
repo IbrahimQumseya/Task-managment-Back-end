@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
-import { logger } from 'src/logger/logger.winston';
+import { logger } from '../logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
 import { join } from 'path';
 
