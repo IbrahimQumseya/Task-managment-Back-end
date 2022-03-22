@@ -28,7 +28,6 @@ import { UserDetailsService } from './user-details.service';
 @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('access-token')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-
 export class UserDetailsController {
   constructor(private userDetailsService: UserDetailsService) {}
 
