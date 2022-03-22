@@ -67,12 +67,13 @@ export class TasksService {
     user: User,
   ): Promise<Task> {
     try {
-      await this.taskRepository
+      const query = await this.taskRepository
         .createQueryBuilder('')
         .update(Task)
         .set({ status: status })
         .where('id=:taskId', { taskId })
         .execute();
+
       const task = await this.getTaskById(taskId, user);
       return task;
     } catch (error) {
