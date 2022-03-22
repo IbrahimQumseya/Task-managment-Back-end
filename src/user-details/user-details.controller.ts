@@ -19,7 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
-import { CreateUserDetailsDto } from './dto/create-user-details-dto';
+import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { UserDetailsService } from './user-details.service';
 

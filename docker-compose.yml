@@ -15,7 +15,7 @@ services:
       - ./ibrah/src/app/node_modules
     # Run in Debug Mode: npm run start:debug --> Don't forget to start your vscode debugger!
     # Run in dev Mode: npm run start:dev
-    command: npm run start:debug
+    command: npm run start:dev
     depends_on:
       - postgres
     environment:
@@ -31,9 +31,9 @@ services:
   postgres:
     image: postgres:10.4
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: task-management
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
     ports:
       - 35000:5432
 

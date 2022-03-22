@@ -1,4 +1,4 @@
-FROM node:17 AS development
+FROM node:16 AS development
 
 WORKDIR /ibrah/src/app
 
@@ -12,7 +12,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:17 as production
+FROM node:16 as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
