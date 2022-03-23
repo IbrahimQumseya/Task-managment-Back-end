@@ -1,0 +1,155 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "logs\\verbose\\.7a71727e248bdb851886888ac38c51b538e267d7-audit.json",
+    "files": [
+        {
+            "date": 1647175905490,
+            "name": "logs\\verbose\\verbose-2022-03-13-14.log",
+            "hash": "bb27e3edc3b394c5c0ad0a3aa6f9875d"
+        },
+        {
+            "date": 1647251883382,
+            "name": "logs\\verbose\\verbose-2022-03-14-11.log",
+            "hash": "e1caff3c967a038c3705b85dcfa77007"
+        },
+        {
+            "date": 1647258842799,
+            "name": "logs\\verbose\\verbose-2022-03-14-13.log",
+            "hash": "0d78b4303ad9298190a64becb9486bb1"
+        },
+        {
+            "date": 1647259349367,
+            "name": "logs\\verbose\\verbose-2022-03-14-14.log",
+            "hash": "c42e683ba13116988578ba3250733af3"
+        },
+        {
+            "date": 1647262968255,
+            "name": "logs\\verbose\\verbose-2022-03-14-15.log",
+            "hash": "9d57c101dc345df6111872ab933d5285"
+        },
+        {
+            "date": 1647346588704,
+            "name": "logs\\verbose\\verbose-2022-03-15-14.log",
+            "hash": "4a258b858fac7fd5728e10ee3937344f"
+        },
+        {
+            "date": 1647353533085,
+            "name": "logs\\verbose\\verbose-2022-03-15-16.log",
+            "hash": "c6cad538182e61cb132992b4ed69d39d"
+        },
+        {
+            "date": 1647424620192,
+            "name": "logs\\verbose\\verbose-2022-03-16-11.log",
+            "hash": "585bd49da541c3845ab14ddc0b080f3d"
+        },
+        {
+            "date": 1647426025684,
+            "name": "logs\\verbose\\verbose-2022-03-16-12.log",
+            "hash": "db9d60f2299114e90c8a2144ebdc612e"
+        },
+        {
+            "date": 1647428456082,
+            "name": "logs\\verbose\\verbose-2022-03-16-13.log",
+            "hash": "939d4c2e2bfa620d5fe14ea773571d40"
+        },
+        {
+            "date": 1647432089804,
+            "name": "logs\\verbose\\verbose-2022-03-16-14.log",
+            "hash": "c7cf0795acfaca33f7acbd6f8d0abe70"
+        },
+        {
+            "date": 1647436896894,
+            "name": "logs\\verbose\\verbose-2022-03-16-15.log",
+            "hash": "f04f212cd71823c16eacbfadb5b2c091"
+        },
+        {
+            "date": 1647439588390,
+            "name": "logs\\verbose\\verbose-2022-03-16-16.log",
+            "hash": "b0b46fb31e0fe5516870c79f479339bb"
+        },
+        {
+            "date": 1647442847573,
+            "name": "logs\\verbose\\verbose-2022-03-16-17.log",
+            "hash": "947a967218790f8697b1cabbcde6212f"
+        },
+        {
+            "date": 1647527461539,
+            "name": "logs\\verbose\\verbose-2022-03-17-16.log",
+            "hash": "0aee4d6e31bd77b947a23861b9016f64"
+        },
+        {
+            "date": 1647591097717,
+            "name": "logs\\verbose\\verbose-2022-03-18-10.log",
+            "hash": "66fde6861107ee2c05461abb0b3f8656"
+        },
+        {
+            "date": 1647594448088,
+            "name": "logs\\verbose\\verbose-2022-03-18-11.log",
+            "hash": "26941ccaab40de14d9e71092a24b7185"
+        },
+        {
+            "date": 1647597822619,
+            "name": "logs\\verbose\\verbose-2022-03-18-12.log",
+            "hash": "2154e04e0e71cd0ccc386ffc88c2f134"
+        },
+        {
+            "date": 1647618271750,
+            "name": "logs\\verbose\\verbose-2022-03-18-17.log",
+            "hash": "ab79d0c2374aa51cffc310fc4ab15151"
+        },
+        {
+            "date": 1647619276831,
+            "name": "logs\\verbose\\verbose-2022-03-18-18.log",
+            "hash": "1b82f381a85474395ceb830360139dd6"
+        },
+        {
+            "date": 1647857923831,
+            "name": "logs\\verbose\\verbose-2022-03-21-12.log",
+            "hash": "cb39a2a3f239a90f7c8f96b2f6374315"
+        },
+        {
+            "date": 1647943908356,
+            "name": "logs\\verbose\\verbose-2022-03-22-12.log",
+            "hash": "9f5bf22e22b5eb0ea57b29d80082caf9"
+        },
+        {
+            "date": 1647956919686,
+            "name": "logs\\verbose\\verbose-2022-03-22-15.log",
+            "hash": "27b7828fa3228d6e3307c9af7d1b8f7a"
+        },
+        {
+            "date": 1647957672040,
+            "name": "logs\\verbose\\verbose-2022-03-22-16.log",
+            "hash": "d1d9b77a4abcb0f5cdabd43f91ad5661"
+        },
+        {
+            "date": 1647962525446,
+            "name": "logs\\verbose\\verbose-2022-03-22-17.log",
+            "hash": "dc97e47535722c0d991d3c901810a785"
+        },
+        {
+            "date": 1648034545144,
+            "name": "logs\\verbose\\verbose-2022-03-23-13.log",
+            "hash": "e816d919750c69bf1a902a16fe5e1b34"
+        },
+        {
+            "date": 1648036934793,
+            "name": "logs\\verbose\\verbose-2022-03-23-14.log",
+            "hash": "46c7a3c8b32c8e670f32e46a42a48dd6"
+        },
+        {
+            "date": 1648046768228,
+            "name": "logs\\verbose\\verbose-2022-03-23-16.log",
+            "hash": "02a65071448542a743d261e36edaacf8"
+        },
+        {
+            "date": 1648047174820,
+            "name": "logs/verbose/verbose-2022-03-23-14.log",
+            "hash": "c3f86674caeae84e306fdf7be919f0be"
+        }
+    ],
+    "hashType": "md5"
+}
