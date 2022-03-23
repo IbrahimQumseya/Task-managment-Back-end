@@ -37,6 +37,7 @@ export class UserDetailsController {
   getUserDetails(@GetUser() user: User): Promise<UserDetails> {
     return this.userDetailsService.getUserDetails(user);
   }
+  
   @Post('/create-details/user/:idUser')
   @ApiCreatedResponse({ description: 'Create User Details' })
   @ApiBody({ type: CreateUserDetailsDto })

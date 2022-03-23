@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Test } from '@nestjs/testing';
+import { UserRole } from '../auth/enum/user-role.enum';
 import { UsersRepository } from '../auth/users.respository';
 import { TaskStatus } from '../tasks/task-status.enum';
 import { UserDetailsRepository } from './user-details.repository';
@@ -11,7 +12,7 @@ const mockUser = {
   tasks: [],
   userDetails: {
     location: 'asd',
-    number: 'asd',
+    number: 123,
     telephone: 156489,
     address: 'asd',
     id: 'asd',
@@ -22,6 +23,8 @@ const mockUser = {
   id: 'asdd',
   email: 'asd',
   isDeactivated: true,
+  role: UserRole.USER,
+  profileImage: '',
 };
 const mockTask = {
   title: 'TestTitle',
@@ -59,7 +62,9 @@ describe('UserDetailsService', () => {
   });
   describe('UserDetailsService', () => {
     it('calls UserDetailsService.getUserDetails and returns the result', async () => {
-      userDetailsRepository.getUserDetails.mockResolvedValue(mockUser.userDetails);
+      userDetailsRepository.getUserDetails.mockResolvedValue(
+        mockUser.userDetails,
+      );
       const result = await userDetailsService.getUserDetails(mockUser);
       expect(result).toBe(mockUser.userDetails);
     });

@@ -9,8 +9,8 @@ import { EntityRepository, Repository } from 'typeorm';
 import { CreateUserDetailsDto } from './dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { v4 as uuid } from 'uuid';
-import { UpdateUserDetailsDto } from 'src/auth/dto/updateUser-userDetails.dto';
-import { logger } from 'src/logger/logger.winston';
+import { UpdateUserDetailsDto } from '../auth/dto/updateUser-userDetails.dto';
+import { logger } from '../logger/logger.winston';
 
 @EntityRepository(UserDetails)
 export class UserDetailsRepository extends Repository<UserDetails> {

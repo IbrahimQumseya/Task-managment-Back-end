@@ -9,9 +9,9 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
-import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
+import { GetTaskMetadaDto } from '../task-metadata/dto/get-tasks-metadata.dto';
 import { logger } from './../logger/logger.winston';
-import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
+import { TaskMetadata } from '../task-metadata/entity/task-metadata.entity';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {

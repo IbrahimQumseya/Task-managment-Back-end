@@ -1,5 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
@@ -7,11 +11,11 @@ import { TaskRepository } from './tasks.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
 import { User } from '../auth/user.entity';
-import { TaskMetadataRepository } from 'src/task-metadata/metatasks.repository';
-import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
-import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
+import { TaskMetadataRepository } from '../task-metadata/metatasks.repository';
+import { GetTaskMetadaDto } from '../task-metadata/dto/get-tasks-metadata.dto';
+import { TaskMetadata } from '../task-metadata/entity/task-metadata.entity';
 import { createQueryBuilder } from 'typeorm';
-import { logger } from 'src/logger/logger.winston';
+import { logger } from '../logger/logger.winston';
 
 @Injectable()
 export class TasksService {
@@ -34,7 +38,8 @@ export class TasksService {
     filterDto?: GetTaskMetadaDto,
   ): Promise<Task> {
     const task = await this.taskRepository.getTaskById(taskId);
-    return this.taskRepository.getDetailsById(task.taskMetadata, filterDto);
+    const taskMetadata = await this.taskMetadataTask.getTaskDetail(taskId);
+    return this.taskRepository.getDetailsById(taskMetadata, filterDto);
   }
 
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
@@ -57,16 +62,25 @@ export class TasksService {
   }
 
   async updateStatusById(
-    id: string,
+    taskId: string,
     status: TaskStatus,
     user: User,
   ): Promise<Task> {
-    const task = await this.getTaskById(id, user);
-    task.status = status;
-    await this.taskRepository.save(task);
-    return task;
+    try {
+      const query = await this.taskRepository
+        .createQueryBuilder('')
+        .update(Task)
+        .set({ status: status })
+        .where('id=:taskId', { taskId })
+        .execute();
+
+      const task = await this.getTaskById(taskId, user);
+      return task;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
-  
+
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const task = await this.taskRepository.createTask(createTaskDto, user);
     const taskMetadata = await this.taskMetadataTask.createMetadataTask(
