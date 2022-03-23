@@ -25,13 +25,13 @@ import {
 import { v4 as uuid } from 'uuid';
 import { diskStorage } from 'multer';
 
-import { UpdateUserDetailsDto } from 'src/auth/dto/updateUser-userDetails.dto';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { UpdateUserDetailsDto } from '../auth/dto/updateUser-userDetails.dto';
+import { GetUser } from '../auth/get-user.decorator';
+import { User } from '../auth/user.entity';
 import { UsersService } from './users.service';
 import * as path from 'path';
-import { UserRole } from 'src/auth/enum/user-role.enum';
-import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import { UserRole } from '../auth/enum/user-role.enum';
+import { UserDetails } from '../user-details/entity/user-details.entity';
 
 export const storage = {
   storage: diskStorage({
@@ -47,7 +47,7 @@ export const storage = {
 
 @ApiTags('Users')
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
   logger: Logger = new Logger('users');
@@ -67,7 +67,7 @@ export class UsersController {
   @Post('/upload/profile-image')
   @ApiOkResponse({ description: 'Upload user Image' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-  @UseGuards(AuthGuard('jwt'))
+
   @UseInterceptors(FileInterceptor('file', storage))
   uploadFile(
     @UploadedFile() file: Express.Multer.File,
@@ -82,7 +82,6 @@ export class UsersController {
   }
 
   @Get('/user/profile-image')
-  @UseGuards(AuthGuard('jwt'))
   getProfileImage(
     @GetUser() user: User,
     @Res() res,
@@ -96,7 +95,6 @@ export class UsersController {
   @ApiParam({ name: 'role', enum: UserRole, description: 'User Role' })
   @ApiBearerAuth('access-token')
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  @UseGuards(AuthGuard())
   updateUserRole(
     @Param('userId') userId: string,
     @Param('role') role: UserRole,
@@ -108,7 +106,6 @@ export class UsersController {
   @ApiOkResponse({ description: 'what roles we have ' })
   @ApiBearerAuth('access-token')
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  @UseGuards(AuthGuard())
   getRolesForUser(): Promise<object> {
     return this.userService.getRolesForUser();
   }
