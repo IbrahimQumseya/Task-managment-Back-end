@@ -146,9 +146,14 @@
             "hash": "02a65071448542a743d261e36edaacf8"
         },
         {
-            "date": 1648047174820,
-            "name": "logs/verbose/verbose-2022-03-23-14.log",
-            "hash": "c3f86674caeae84e306fdf7be919f0be"
+            "date": 1648130887791,
+            "name": "logs\\verbose\\verbose-2022-03-24-16.log",
+            "hash": "7e2e92155516493580f4a936a2e1c012"
+        },
+        {
+            "date": 1648132768950,
+            "name": "logs/verbose/verbose-2022-03-24-14.log",
+            "hash": "489b4ba13fa2fe824846e238e6ed1a9e"
         }
     ],
     "hashType": "md5"

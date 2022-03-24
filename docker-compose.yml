@@ -20,15 +20,15 @@ services:
       - postgres
     environment:
       NODE_ENV: development
-      # DB_HOST: localhost
-      # DB_PORT: 5432
-      # DB_USERNAME: postgres
-      # DB_PASSWORD: postgres
-      # DB_DATABASE: task-management
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: user
+      DB_PASSWORD: password
+      DB_DATABASE: db
       JWT_SECRECT: 1hard_to_guess_secret7890a
-      DATABASE_URL: postgres://user:password@postgres:5432/task-management
+      DATABASE_URL: postgres://user:password@postgres:5432/db
     ports:
-      - 8085:3000
+      - 3000:3000
       # debugging port
       - 9229:9229
 
@@ -37,9 +37,9 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: task-management
+      POSTGRES_DB: db
     ports:
-      - 5432:5432
+      - 35000:5432
 
     ### Postgres Adminer ###
   postgres_admin:

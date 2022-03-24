@@ -36,6 +36,7 @@ import { UsersModule } from './users/users.module';
           database: configService.get('DB_DATABASE'),
           autoLoadEntities: true,
           synchronize: true,
+          url: configService.get('DATABASE_URL'),
         };
       },
     }),

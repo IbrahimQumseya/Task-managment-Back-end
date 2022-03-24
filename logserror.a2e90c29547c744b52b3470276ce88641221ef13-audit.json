@@ -101,9 +101,14 @@
             "hash": "db618ef3177a9561b0670d15254e8823"
         },
         {
-            "date": 1648047174829,
-            "name": "logs/error/error-2022-03-23-14.log",
-            "hash": "678a15d41bd9765f735b871f94c26785"
+            "date": 1648130887795,
+            "name": "logs\\error\\error-2022-03-24-16.log",
+            "hash": "6bb2ba84ec18903da594fbde2601bb3a"
+        },
+        {
+            "date": 1648132768959,
+            "name": "logs/error/error-2022-03-24-14.log",
+            "hash": "3bc47fde9ef7a3b0dfb7c4c107fffb89"
         }
     ],
     "hashType": "md5"
