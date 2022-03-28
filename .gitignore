@@ -7,6 +7,10 @@ package-lock.json
 
 .uploads
 
+.env*
+.env.*
+.env.stage.dev
+.env.stage.prod
 
 # Logs
 logs
