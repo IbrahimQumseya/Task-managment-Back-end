@@ -39,6 +39,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       username,
     });
+
     if (user && (await bcrypt.compare(password, user.password))) {
       const {
         firstName,
@@ -67,7 +68,7 @@ export class AuthService {
     } else {
       logger.log(
         'error',
-        `Signing in ${user.username} "Please check you login credentials"  , Failed!`,
+        `Signing in ${user?.username} "Please check you login credentials"  , Failed!`,
       );
       throw new UnauthorizedException('Please check you login credentials');
     }
@@ -86,7 +87,7 @@ export class AuthService {
     if (!userDetails) {
       logger.log(
         'error',
-        `The user Doesn't have details ${getUser.username} , Success!`,
+        `The user Doesn't have details ${getUser?.username} , Success!`,
       );
       throw new ConflictException(`The user Doesn't have details`);
     } else {
@@ -100,13 +101,13 @@ export class AuthService {
       await this.userDetailsRepository.save(userDetails);
       logger.log(
         'verbose',
-        `Updating a Username details with username of ${getUser.username} , Success!`,
+        `Updating a Username details with username of ${getUser?.username} , Success!`,
       );
       return getUser;
     } catch (error) {
       logger.log(
         'error',
-        `Updating a Username details with username of ${getUser.username} , Failed!`,
+        `Updating a Username details with username of ${getUser?.username} , Failed!`,
       );
       throw new InternalServerErrorException();
     }

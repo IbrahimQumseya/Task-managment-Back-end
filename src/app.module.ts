@@ -24,7 +24,7 @@ import { UsersModule } from './users/users.module';
 
         return {
           ssl: isProduction,
-          logging: true,
+          logging: false,
           extra: {
             ssl: isProduction ? { rejectUnauthorized: false } : null,
           },
