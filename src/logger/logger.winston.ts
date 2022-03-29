@@ -1,4 +1,5 @@
-import * as winston from 'winston';
+const winston = require('winston')
+const CloudWatchTransport = require('winston-aws-cloudwatch')
 import 'winston-daily-rotate-file';
 
 const verboseTransport = {
@@ -43,11 +44,41 @@ const errorTransports = new winston.transports.DailyRotateFile(errorTransport);
 const infoTransports = new winston.transports.DailyRotateFile(infoTransport);
 const warnTransports = new winston.transports.DailyRotateFile(warnTransport);
 
-export const logger = winston.createLogger({
+const logger = winston.createLogger({
   transports: [
+    new CloudWatchTransport({
+      logGroupName: process.env.CLOUDWATCH_GROUP_NAME,
+      logStreamName: `${process.env.CLOUDWATCH_GROUP_NAME}-${process.env.NODE_ENV}`,
+      createLogGroup: true,
+      createLogStream: true,
+      submissionInterval: 2000,
+      submissionRetryCount: 1,
+      batchSize: 20,
+      awsConfig: {
+        accessKeyId: process.env.AWS_ACCESS_KEY,
+        secretAccessKey: process.env.AWS_SECRET_KEY,
+        region: process.env.AWS_BUCKET_REGION,
+      },
+      formatLog: (item) =>
+        `${item.level}: ${item.message} ${JSON.stringify(item.meta)}`,
+    }),
     verboseTransports,
     errorTransports,
     infoTransports,
     warnTransports,
   ],
 });
+
+const cloudwatchConfig = {
+  logGroupName: process.env.CLOUDWATCH_GROUP_NAME,
+  logStreamName: `${process.env.CLOUDWATCH_GROUP_NAME}-${process.env.NODE_ENV}`,
+  awsAccessKeyId: process.env.AWS_ACCESS_KEY,
+  awsSecretKey: process.env.AWS_SECRET_KEY,
+  awsRegion: process.env.AWS_BUCKET_REGION,
+  messageFormatter: ({ level, message, additionalInfo }) =>
+    `[${level}] : ${message} \nAdditional Info: ${JSON.stringify(
+      additionalInfo,
+    )}}`,
+};
+
+export { logger };

@@ -2,7 +2,6 @@ import { S3 } from 'aws-sdk';
 import { EntityRepository, Repository } from 'typeorm';
 import PublicFile from './entity/PublicFile.entity';
 import { v4 as uuid } from 'uuid';
-import { ConfigService } from '@nestjs/config';
 
 @EntityRepository(PublicFile)
 export class FilesRepository extends Repository<PublicFile> {
