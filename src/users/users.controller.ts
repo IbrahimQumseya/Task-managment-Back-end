@@ -32,6 +32,7 @@ import { UsersService } from './users.service';
 import * as path from 'path';
 import { UserRole } from 'src/auth/enum/user-role.enum';
 import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import PublicFile from 'src/files/entity/PublicFile.entity';
 
 export const storage = {
   storage: diskStorage({
@@ -73,12 +74,31 @@ export class UsersController {
     @UploadedFile() file: Express.Multer.File,
     @Request() req,
   ): Promise<User> {
-    console.log(file);
     this.logger.verbose(file);
     const imagePath = file.filename;
 
     const user: User = req.user;
     return this.userService.uploadFile(user.id, imagePath);
+  }
+
+  @Post('/upload/avatar')
+  @ApiOkResponse({ description: 'Upload user avatar' })
+  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
+  uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req,
+  ): Promise<PublicFile> {
+    // this.logger.verbose(file);
+    // const imagePath = file.filename;
+
+    const user: User = req.user;
+    return this.userService.UploadAvatarS3(
+      user.id,
+      file.buffer,
+      file.originalname,
+    );
   }
 
   @Get('/user/profile-image')

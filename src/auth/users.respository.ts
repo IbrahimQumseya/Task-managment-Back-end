@@ -10,6 +10,7 @@ import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
 import { join } from 'path';
+import PublicFile from 'src/files/entity/PublicFile.entity';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -93,18 +94,36 @@ export class UsersRepository extends Repository<User> {
     return roleForUsers;
   }
 
-  async updateOne(userId: string, imagePath: string): Promise<User> {
+  async updateOne(
+    userId: string,
+    imagePath: string,
+    avatar?: PublicFile,
+  ): Promise<User> {
     try {
-      const query = await this.createQueryBuilder()
-        .update(User)
-        .set({ profileImage: imagePath })
-        .where({ id: userId })
-        .execute();
-      if (query.affected === 1) {
-        const user = await this.getUser(userId);
-        return user;
+      if (avatar) {
+        const query = await this.createQueryBuilder()
+          .update(User)
+          .set({ profileImage: imagePath, avatar })
+          .where({ id: userId })
+          .execute();
+        if (query.affected === 1) {
+          const user = await this.getUser(userId);
+          return user;
+        } else {
+          throw new NotFoundException();
+        }
       } else {
-        throw new NotFoundException();
+        const query = await this.createQueryBuilder()
+          .update(User)
+          .set({ profileImage: imagePath })
+          .where({ id: userId })
+          .execute();
+        if (query.affected === 1) {
+          const user = await this.getUser(userId);
+          return user;
+        } else {
+          throw new NotFoundException();
+        }
       }
     } catch (error) {
       throw new InternalServerErrorException();

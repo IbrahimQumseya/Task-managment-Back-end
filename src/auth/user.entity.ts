@@ -7,9 +7,11 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { UserRole } from './enum/user-role.enum';
+import PublicFile from 'src/files/entity/PublicFile.entity';
 
 @Entity()
 export class User {
@@ -38,7 +40,7 @@ export class User {
 
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
-  
+
   @Column({ nullable: true })
   profileImage: string;
 
@@ -47,4 +49,11 @@ export class User {
 
   @OneToOne(() => UserDetails, (userDetails) => userDetails.user)
   userDetails: UserDetails;
+
+  @JoinColumn()
+  @OneToOne(() => PublicFile, {
+    eager: true,
+    nullable: true,
+  })
+  public avatar?: PublicFile;
 }
