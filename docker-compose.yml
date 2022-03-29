@@ -28,7 +28,7 @@ services:
       JWT_SECRECT: 1hard_to_guess_secret7890a
       DATABASE_URL: postgres://user:password@postgres:5432/db
     ports:
-      - 3000:3000
+      - 3001:3001
       # debugging port
       - 9229:9229
 
