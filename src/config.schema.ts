@@ -9,5 +9,18 @@ export const configValidationSchema = Joi.object({
   DB_USERNAME: Joi.string().required(),
   DB_PASSWORD: Joi.string().required(),
   DB_DATABASE: Joi.string().required(),
-  JWT_SECRECT: Joi.string().required()
+  JWT_SECRECT: Joi.string().required(),
+  //discord
+  DISCORD_clientID: Joi.string().required(),
+  DISCORD_clientSecret: Joi.string().required(),
+  DISCORD_callbackURL: Joi.string().required(),
+  //google
+  GOOGLE_clientID: Joi.string().required(),
+  GOOGLE_clientSecret: Joi.string().required(),
+  ///facebook
+  FACEBOOK_clientID: Joi.string().required(),
+  FACEBOOK_clientSecret: Joi.string().required(),
+  //github
+  GITHUB_clientID: Joi.string().required(),
+  GITHUB_clientSecret: Joi.string().required(),
 });

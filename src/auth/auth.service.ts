@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import {
   ConflictException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
@@ -17,6 +18,7 @@ import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
 import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +29,17 @@ export class AuthService {
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
   ) {}
+
+  async googleLogin(req: Request): Promise<any> {
+    if (!req.user) {
+      return 'No User from google';
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User information from google',
+      user: req.user,
+    };
+  }
 
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
     return this.userRepository.createUser(authCredentialsDto);
@@ -72,6 +85,11 @@ export class AuthService {
       throw new UnauthorizedException('Please check you login credentials');
     }
   }
+
+  async findUserFromDiscordId(discordId: string): Promise<any> {
+    const user = await this.userRepository.getUser(discordId);
+  }
+
   async updateUser(
     user: User,
     updateUserDetailsDto: UpdateUserDetailsDto,
