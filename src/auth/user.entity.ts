@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { UserRole } from './enum/user-role.enum';
+import { LoginOption } from './enum/user-log-in-enum';
 
 @Entity()
 export class User {
@@ -29,7 +30,7 @@ export class User {
   @Column({ nullable: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   password: string;
 
@@ -38,9 +39,12 @@ export class User {
 
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
-  
+
   @Column({ nullable: true })
   profileImage: string;
+
+  @Column({ type: 'enum', enum: LoginOption, default: LoginOption.LOCAL })
+  signWith: LoginOption;
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];
