@@ -11,6 +11,10 @@ import { UserDetailsRepository } from 'src/user-details/user-details.repository'
 import * as fs from 'fs';
 import { UserRole } from 'src/auth/enum/user-role.enum';
 import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import { Profile } from 'passport-facebook';
+import { LoginOption } from '../auth/enum/user-log-in-enum';
+import { v4 as uuid } from 'uuid';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UsersService {

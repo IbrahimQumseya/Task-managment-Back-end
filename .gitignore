@@ -4,10 +4,12 @@
 /.vs
 package-lock.json
 /uploads
-
+/secrets
 .uploads
 
 .env*
+.env.stage.dev
+.env.stage.prod
 
 # Logs
 logs

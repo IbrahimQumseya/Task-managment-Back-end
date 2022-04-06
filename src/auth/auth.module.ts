@@ -15,6 +15,7 @@ import { GoogleStrategy } from './3rdauth/google/google.strategy';
 import { HttpModule } from '@nestjs/axios';
 import { FacebookStrategy } from './3rdauth/facebook/facebook.strategy';
 import { GithubStrategy } from './3rdauth/github/github.strategy';
+import { UsersService } from '../users/users.service';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { GithubStrategy } from './3rdauth/github/github.strategy';
   ],
   providers: [
     AuthService,
+    UsersService,
     JwtStrategy,
     DiscordStrategy,
     GoogleStrategy,

@@ -10,6 +10,7 @@ import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
 import { join } from 'path';
+import { Create3rdAuthUser } from './dto/create-3rd-authUser.dto';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -91,6 +92,34 @@ export class UsersRepository extends Repository<User> {
       // Role: UserRole[key].toLowerCase(),
     }));
     return roleForUsers;
+  }
+
+  async create3rdAuthUser(create3rdAuthUser: Create3rdAuthUser): Promise<User> {
+    const { email, firstName, lastName, signWith, username } =
+      create3rdAuthUser;
+    const user = this.create({
+      email,
+      firstName,
+      lastName,
+      signWith,
+      username,
+    });
+    try {
+      await this.save(user);
+      logger.log(
+        'verbose',
+        `Signing up a user with name of ${user.username} , Success!`,
+      );
+      return user;
+    } catch (error) {
+      if (error.code === '23505') {
+        logger.log(
+          'error',
+          `user already exist with username of : ${user.username} , Failed!`,
+        );
+        throw new ConflictException('Username already exists');
+      }
+    }
   }
 
   async updateOne(userId: string, imagePath: string): Promise<User> {
