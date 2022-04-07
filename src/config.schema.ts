@@ -10,6 +10,7 @@ export const configValidationSchema = Joi.object({
   DB_PASSWORD: Joi.string().required(),
   DB_DATABASE: Joi.string().required(),
   JWT_SECRECT: Joi.string().required(),
+  SESSION_SECRET: Joi.string().required(),
   //discord
   DISCORD_clientID: Joi.string().required(),
   DISCORD_clientSecret: Joi.string().required(),

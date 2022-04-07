@@ -25,6 +25,10 @@ export class UsersService {
     private userDetailsRepository: UserDetailsRepository,
   ) {}
 
+  async getUser(idUser: string): Promise<User> {
+    return this.userRepository.getUser(idUser);
+  }
+
   async getProfileImage(
     user: User,
     res: any,

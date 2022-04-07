@@ -4,11 +4,13 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Patch,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -26,15 +28,16 @@ import {
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { http } from 'winston';
 import { OAuth2Client } from 'google-auth-library';
 import * as passport from 'passport';
+import { LogInWithCredentialsGuard } from './3rdauth/guards/logInWithCredentialsGuard';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('/signup')
   @ApiCreatedResponse({ description: 'User Registration' })
@@ -44,6 +47,16 @@ export class AuthController {
   ): Promise<string> {
     return this.authService.signUp(authCredentialsDto);
   }
+
+  // @HttpCode(200)
+  // @UseGuards(AuthGuard('local'))
+  // @Post('/log-in')
+  // async logIn(
+  //   @Req() request: Request,
+  //   @Body() authCredentialsDto: AuthSignInCredentialsDto,
+  // ) {
+  //   return request.user;
+  // }
 
   @Post('/signin')
   @ApiOkResponse({ description: 'User Login' })
@@ -63,9 +76,10 @@ export class AuthController {
   }
 
   @Get('/logout')
-  async googleAuthLogout(@Req() req: Request, res: any) {
+  async googleAuthLogout(@Req() req: any, res: Response) {
     req.logout();
-    return res.redirected('http://localhost:8081/home');
+
+    return res.redirect('http://localhost:8081/home');
   }
 
   // @Get('/google')
@@ -89,26 +103,28 @@ export class AuthController {
   }
 
   @Get('/google')
-  // @UseGuards(AuthGuard('google'))
+  @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req: Request) {
-    const googleClient = new OAuth2Client({
-      clientId: `${process.env.GOOGLE_clientID}`,
-    });
-    console.log(req);
+    // const googleClient = new OAuth2Client({
+    //   clientId: `${process.env.GOOGLE_clientID}`,
+    // });
+    // console.log(req);
 
-    const { token } = req.body;
-    const ticket = await googleClient.verifyIdToken({
-      idToken: token,
-      audience: `${process.env.GOOGLE_clientID}`,
-    });
+    // const { token } = req.body;
+    // const ticket = await googleClient.verifyIdToken({
+    //   idToken: token,
+    //   audience: `${process.env.GOOGLE_clientID}`,
+    // });
 
-    const payload = ticket.getPayload();
-    return await this.authService.googleAuth(payload);
+    // const payload = ticket.getPayload();
+    return await this.authService.googleAuth(req);
   }
 
   @Get('/google/redirect')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req) {
+  async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
+    // req.red\
+
     // const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
     // const { accessToken } = req.user;
@@ -121,7 +137,7 @@ export class AuthController {
 
     // const payload = ticket.getPayload();
     // return await this.authService.googleAuth(payload);
-    return this.authService.googleLogin(req);
+    return this.authService.googleLogin(req, res);
   }
 
   // facebook
@@ -146,7 +162,7 @@ export class AuthController {
   //github
   @Get('/github')
   @UseGuards(AuthGuard('github'))
-  async githubAuth(@Req() req) {}
+  async githubAuth(@Req() req) { }
 
   @Get('/github/redirect')
   @UseGuards(AuthGuard('github'))

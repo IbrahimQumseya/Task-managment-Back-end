@@ -17,7 +17,7 @@ import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
 import { logger } from 'src/logger/logger.winston';
 import { v4 as uuid } from 'uuid';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { LoginOption } from './enum/user-log-in-enum';
 import { Profile } from 'passport-facebook';
 import { OAuth2Client } from 'google-auth-library';
@@ -82,13 +82,13 @@ export class AuthService {
     });
   }
 
-  async googleAuthTest(req: Request, res): Promise<any> {
+  async googleAuthTest(req: Request, res: Response): Promise<any> {
     if (!req.user) {
       return 'No User from google';
     }
     console.log(res);
 
-    return res;
+    return req.user;
   }
 
   async facebookAuthTest(req: Request, res): Promise<any> {
@@ -96,18 +96,26 @@ export class AuthService {
       return 'No User from facebook';
     }
 
-    return res;
+    return req.user;
   }
 
-  async googleLogin(req: any): Promise<any> {
+  async googleLogin(req: any, res: Response): Promise<any> {
     if (!req.user) {
       return 'No User from google';
     }
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'User information from google',
-      accessToken: req.user.accessToken,
-    };
+    // res.status(200).json({
+    //   statusCode: HttpStatus.OK,
+    //   // message: 'User information from google',
+    //   accessToken: req.user.accessToken,
+    // });
+
+    return (
+      {
+        statusCode: HttpStatus.OK,
+        message: 'User information from google',
+        accessToken: req.user.accessToken,
+      } && res.redirect('http://localhost:8081/home')
+    );
   }
 
   async facebookAuthRedirect(req: any): Promise<any> {
