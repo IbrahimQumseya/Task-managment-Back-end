@@ -33,7 +33,7 @@
     "@nestjs/typeorm": "^8.0.2",
     "@types/aws-sdk": "^2.7.0",
     "@types/passport-jwt": "^3.0.6",
-    "aws-sdk": "^2.1101.0",
+    "aws-sdk": "^2.1109.0",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
