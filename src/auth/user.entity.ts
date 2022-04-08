@@ -29,7 +29,7 @@ export class User {
   @Column({ nullable: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   password: string;
 
@@ -38,7 +38,7 @@ export class User {
 
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
-  
+
   @Column({ nullable: true })
   profileImage: string;
 

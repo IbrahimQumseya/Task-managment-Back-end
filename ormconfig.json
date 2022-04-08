@@ -1,0 +1,18 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "password",
+  "database": "task-management",
+  "entities": ["src/**/**/*.entity.ts", "src/**/*.entity.ts"],
+
+  "migrations": ["src/migrations/**/*.{ts,js}"],
+  "subscribers": ["src/subscriber/**/*.ts"],
+  "migrationsTableName": "custom_migration_table",
+  "cli": {
+    "migrationsDir": "./migrations",
+    "subscriberDir": "./subscriber"
+  },
+  "synchronize": false
+}
