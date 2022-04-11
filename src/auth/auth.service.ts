@@ -17,6 +17,7 @@ import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
 import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
+import { StripeService } from '../stripe/stripe.service';
 
 @Injectable()
 export class AuthService {
@@ -26,10 +27,15 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
+    private stripeService: StripeService,
   ) {}
 
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
-    return this.userRepository.createUser(authCredentialsDto);
+    const stripeCustomer = await this.stripeService.createCustomer(
+      authCredentialsDto.username,
+      authCredentialsDto.email,
+    );
+    return this.userRepository.createUser(authCredentialsDto, stripeCustomer);
   }
 
   async signIn(authCredentialsDtoL: AuthSignInCredentialsDto): Promise<{

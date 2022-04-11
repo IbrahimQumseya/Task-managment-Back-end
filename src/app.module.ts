@@ -7,10 +7,7 @@ import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UsersModule } from './users/users.module';
-import { User } from './auth/user.entity';
-import { UserDetails } from './user-details/entity/user-details.entity';
-import { Task } from './tasks/task.entity';
-import { TaskMetadata } from './task-metadata/entity/task-metadata.entity';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -38,7 +35,6 @@ import { TaskMetadata } from './task-metadata/entity/task-metadata.entity';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
-          // entities: [User, UserDetails, Task, TaskMetadata],
           autoLoadEntities: true,
           synchronize: true,
         };
@@ -48,6 +44,7 @@ import { TaskMetadata } from './task-metadata/entity/task-metadata.entity';
     TaskMetadataModule,
     UserDetailsModule,
     UsersModule,
+    StripeModule,
   ],
 })
 export class AppModule {}

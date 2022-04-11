@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { UserRole } from './enum/user-role.enum';
 
 export interface JwtPayload {

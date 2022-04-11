@@ -36,7 +36,7 @@ export class User {
   @Column({ default: false })
   isDeactivated: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   stripeCustomerId: string;
 
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })

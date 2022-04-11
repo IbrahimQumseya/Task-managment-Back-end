@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { ConfigService } from '@nestjs/config';
 import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { UserDetails } from '../user-details/entity/user-details.entity';
+import { StripeService } from '../stripe/stripe.service';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { UserDetails } from '../user-details/entity/user-details.entity';
       UserDetails,
     ]),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, StripeService],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })
