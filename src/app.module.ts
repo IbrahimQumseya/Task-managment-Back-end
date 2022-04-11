@@ -7,6 +7,9 @@ import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UsersModule } from './users/users.module';
+import { User } from './auth/user.entity';
+import { UserDetails } from './user-details/entity/user-details.entity';
+import { Task } from './tasks/task.entity';
 
 @Module({
   imports: [
@@ -34,6 +37,7 @@ import { UsersModule } from './users/users.module';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
+          entities: [User, UserDetails, Task, TaskMetadataModule],
           autoLoadEntities: true,
           synchronize: true,
         };
