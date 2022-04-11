@@ -29,16 +29,19 @@ export class User {
   @Column({ nullable: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   password: string;
 
   @Column({ default: false })
   isDeactivated: boolean;
 
+  @Column({ nullable: true })
+  test: string;
+
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
-  
+
   @Column({ nullable: true })
   profileImage: string;
 

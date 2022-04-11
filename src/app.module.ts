@@ -7,6 +7,10 @@ import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UsersModule } from './users/users.module';
+import { Task } from './tasks/task.entity';
+import { User } from './auth/user.entity';
+import { TaskMetadata } from './task-metadata/entity/task-metadata.entity';
+import { UserDetails } from './user-details/entity/user-details.entity';
 
 @Module({
   imports: [
@@ -34,7 +38,17 @@ import { UsersModule } from './users/users.module';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
-          autoLoadEntities: true,
+          url: configService.get('POSTGRES_URL'),
+          // entities: [Task, User, TaskMetadata, UserDetails],
+          entities: ['src/**/*.entity.js', 'src/**/**/*.entity.js'],
+          migrations: ['src/migrations/*.ts'],
+          subscribers: ['src/subscriber/**/*.ts'],
+          migrationsTableName: 'custom_migration_table',
+          cli: {
+            migrationsDir: 'src/migrations',
+            entitiesDir: 'src/entity',
+            subscribersDir: 'src/subscriber',
+          },
           synchronize: true,
         };
       },
