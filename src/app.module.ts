@@ -7,6 +7,7 @@ import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UsersModule } from './users/users.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { UsersModule } from './users/users.module';
     TaskMetadataModule,
     UserDetailsModule,
     UsersModule,
+    StripeModule,
   ],
 })
 export class AppModule {}

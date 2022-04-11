@@ -11,6 +11,7 @@ import { UserDetailsRepository } from 'src/user-details/user-details.repository'
 import * as fs from 'fs';
 import { UserRole } from 'src/auth/enum/user-role.enum';
 import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import { StripeService } from '../stripe/stripe.service';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +20,7 @@ export class UsersService {
     private userRepository: UsersRepository,
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
+    private stripeService: StripeService,
   ) {}
 
   async getProfileImage(
@@ -79,5 +81,23 @@ export class UsersService {
 
   async getRolesForUser(): Promise<object> {
     return this.userRepository.getRolesForUser();
+  }
+
+  async createCustomer(userDto: { name: string; email: string }) {
+    const user = await this.userRepository.findOne({ email: userDto.email });
+    const stripeCustomer = await this.stripeService.createCustomer(
+      user.username,
+      user.email,
+    );
+    try {
+      await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({ stripeCustomerId: stripeCustomer.id })
+        .where('id= :id', { id: user.id })
+        .execute();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }

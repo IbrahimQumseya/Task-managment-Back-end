@@ -15,12 +15,14 @@ import { join } from 'path';
 export class UsersRepository extends Repository<User> {
   async createUser(
     authCredentialsDto: AuthSignUpCredentialsDto,
+    stripeCustomer: any,
   ): Promise<string> {
     const { username, password, email, firstName, lastName } =
       authCredentialsDto;
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
+    console.log(stripeCustomer);
 
     const user = this.create({
       username,
@@ -28,6 +30,7 @@ export class UsersRepository extends Repository<User> {
       firstName,
       lastName,
       email,
+      stripeCustomerId: stripeCustomer.id,
     });
     try {
       await this.save(user);

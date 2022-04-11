@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TransformInterceptor } from './transform.interceptor';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const consoleLogger = new Logger();
@@ -16,7 +17,11 @@ async function bootstrap() {
       'access-token',
     )
     .build();
-  app.enableCors();
+  const configService = app.get(ConfigService);
+  app.enableCors({
+    origin: configService.get('FRONTEND_URL'),
+    credentials: true,
+  });
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
   const port = process.env.PORT;
