@@ -6,7 +6,6 @@ import { User } from './src/auth/user.entity';
 import { UserDetails } from './src/user-details/entity/user-details.entity';
 
 dotenv.config();
-console.log(process.env);
 
 const pgConfig: PostgresConnectionOptions = {
   ssl: false,

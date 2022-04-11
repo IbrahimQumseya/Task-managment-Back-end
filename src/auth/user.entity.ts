@@ -36,6 +36,9 @@ export class User {
   @Column({ default: false })
   isDeactivated: boolean;
 
+  @Column({ nullable: true })
+  test: string;
+
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
 

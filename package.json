@@ -22,7 +22,7 @@
     "migration:run": "ts-node ./node_modules/typeorm/cli.js -f ./orm.config.ts migration:run",
     "migration:revert": "ts-node ./node_modules/typeorm/cli.js -f ./orm.config.ts migration:revert",
     "migration:generate": "ts-node ./node_modules/typeorm/cli.js -f ./orm.config.ts migration:generate -n",
-    "migration:create": "ts-node ./node_modules/typeorm/cli.js -f ./orm.config.ts migration:create -n"
+    "migration:create": "ts-node ./node_modules/typeorm/cli.js -f ./orm.config.ts migration:create -- -n"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",

@@ -40,7 +40,7 @@ import { UserDetails } from './user-details/entity/user-details.entity';
           database: configService.get('DB_DATABASE'),
           url: configService.get('POSTGRES_URL'),
           // entities: [Task, User, TaskMetadata, UserDetails],
-          entities: ['dist/**/*.entity.js', 'dist/**/**/*.entity.js'],
+          entities: ['src/**/*.entity.js', 'src/**/**/*.entity.js'],
           migrations: ['src/migrations/*.ts'],
           subscribers: ['src/subscriber/**/*.ts'],
           migrationsTableName: 'custom_migration_table',
