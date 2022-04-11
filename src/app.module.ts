@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { User } from './auth/user.entity';
 import { UserDetails } from './user-details/entity/user-details.entity';
 import { Task } from './tasks/task.entity';
+import { TaskMetadata } from './task-metadata/entity/task-metadata.entity';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { Task } from './tasks/task.entity';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
-          entities: [User, UserDetails, Task, TaskMetadataModule],
+          // entities: [User, UserDetails, Task, TaskMetadata],
           autoLoadEntities: true,
           synchronize: true,
         };
