@@ -8,6 +8,7 @@ import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UsersModule } from './users/users.module';
 import { StripeModule } from './stripe/stripe.module';
+import { BrainModule } from './brain/brain.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { StripeModule } from './stripe/stripe.module';
     UserDetailsModule,
     UsersModule,
     StripeModule,
+    BrainModule,
   ],
 })
 export class AppModule {}

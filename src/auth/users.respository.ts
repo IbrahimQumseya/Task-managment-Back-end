@@ -10,19 +10,21 @@ import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
 import { join } from 'path';
+import braintree, { Customer, ValidatedResponse } from 'braintree';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
   async createUser(
     authCredentialsDto: AuthSignUpCredentialsDto,
     stripeCustomer: any,
+    brainTreeCustomer: ValidatedResponse<Customer>,
   ): Promise<string> {
     const { username, password, email, firstName, lastName } =
       authCredentialsDto;
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log(stripeCustomer);
+    console.log(brainTreeCustomer);
 
     const user = this.create({
       username,
@@ -31,6 +33,7 @@ export class UsersRepository extends Repository<User> {
       lastName,
       email,
       stripeCustomerId: stripeCustomer.id,
+      brainTreeCustomerId: brainTreeCustomer.customer.id,
     });
     try {
       await this.save(user);

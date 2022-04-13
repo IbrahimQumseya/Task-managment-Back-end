@@ -18,6 +18,7 @@ import { User } from './user.entity';
 import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
 import { StripeService } from '../stripe/stripe.service';
+import { BrainService } from '../brain/brain.service';
 
 @Injectable()
 export class AuthService {
@@ -28,14 +29,23 @@ export class AuthService {
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
     private stripeService: StripeService,
+    private brainTreeCustomer: BrainService,
   ) {}
 
   async signUp(authCredentialsDto: AuthSignUpCredentialsDto): Promise<string> {
+    const brainTreeCustomer = await this.brainTreeCustomer.createCustomer(
+      authCredentialsDto.username,
+      authCredentialsDto.email,
+    );
     const stripeCustomer = await this.stripeService.createCustomer(
       authCredentialsDto.username,
       authCredentialsDto.email,
     );
-    return this.userRepository.createUser(authCredentialsDto, stripeCustomer);
+    return this.userRepository.createUser(
+      authCredentialsDto,
+      stripeCustomer,
+      brainTreeCustomer,
+    );
   }
 
   async signIn(authCredentialsDtoL: AuthSignInCredentialsDto): Promise<{

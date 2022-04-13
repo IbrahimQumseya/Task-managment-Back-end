@@ -1,8 +1,11 @@
 import { IsNumber, IsString } from 'class-validator';
 
 export class CreateChargeDto {
-  @IsNumber()
-  amount: number;
+  // @IsNumber()
+  // amount?: number;
+
+  @IsString()
+  amount?: string;
 
   @IsString()
   paymentMethodId: string;

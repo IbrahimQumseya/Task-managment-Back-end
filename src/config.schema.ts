@@ -11,4 +11,8 @@ export const configValidationSchema = Joi.object({
   DB_DATABASE: Joi.string().required(),
   JWT_SECRECT: Joi.string().required(),
   STRIPE_SECRET_KEY: Joi.string().required(),
+
+  MERCHANT_ID: Joi.string().required(),
+  BRAIN_TREE_PUBLIC_KEY: Joi.string().required(),
+  BRAIN_TREE_PRIVATE_KEY: Joi.string().required(),
 });

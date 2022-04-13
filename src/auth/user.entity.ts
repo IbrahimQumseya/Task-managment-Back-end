@@ -39,6 +39,9 @@ export class User {
   @Column({ nullable: true })
   stripeCustomerId: string;
 
+  @Column({ nullable: true })
+  brainTreeCustomerId: string;
+
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
 

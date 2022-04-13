@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { UserDetails } from '../user-details/entity/user-details.entity';
 import { StripeService } from '../stripe/stripe.service';
+import { BrainService } from '../brain/brain.service';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { StripeService } from '../stripe/stripe.service';
       UserDetails,
     ]),
   ],
-  providers: [AuthService, JwtStrategy, StripeService],
+  providers: [AuthService, JwtStrategy, StripeService, BrainService],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })
