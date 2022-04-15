@@ -18,7 +18,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-statys.dto';
 import { Task } from './task.entity';
-import { logger } from './../logger/logger.winston';
+import { logger } from '../logger/logger.winston';
 import { TasksService } from './tasks.service';
 import {
   ApiBearerAuth,

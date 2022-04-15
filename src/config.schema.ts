@@ -9,5 +9,8 @@ export const configValidationSchema = Joi.object({
   DB_USERNAME: Joi.string().required(),
   DB_PASSWORD: Joi.string().required(),
   DB_DATABASE: Joi.string().required(),
-  JWT_SECRECT: Joi.string().required()
+  JWT_SECRECT: Joi.string().required(),
+  MAIL_GUN_DOMAIN: Joi.string().required(),
+  MAIL_GUN_API: Joi.string().required(),
+  RESET_PASSWORD_SECRET: Joi.string().required(),
 });

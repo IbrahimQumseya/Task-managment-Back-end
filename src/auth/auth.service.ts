@@ -8,7 +8,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.respository';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { AuthSignUpCredentialsDto } from './dto/signup-credentials.dto';
 import { AuthSignInCredentialsDto } from './dto/auth-credentials.dto';
@@ -17,6 +16,8 @@ import { UserDetailsRepository } from '../user-details/user-details.repository';
 import { User } from './user.entity';
 import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
+import { JwtService } from '@nestjs/jwt';
+import jwt_decode from 'jwt-decode';
 
 @Injectable()
 export class AuthService {
@@ -110,5 +111,29 @@ export class AuthService {
       );
       throw new InternalServerErrorException();
     }
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    const decoded: { exp: number; iat: number; email: string } =
+      jwt_decode(token);
+    const dateNow = Date.now();
+    if (dateNow < decoded.exp) return new UnauthorizedException();
+    const updatePassword = await this.userRepository.updateUserPassword(
+      decoded.email,
+      newPassword,
+      token,
+    );
+    try {
+      await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({ resetPasswordToken: null })
+        .where('email =:email', { email: decoded.email })
+        .execute();
+    } catch (error) {
+      throw new InternalServerErrorException('null');
+    }
+
+    return updatePassword;
   }
 }

@@ -36,6 +36,9 @@ export class User {
   @Column({ default: false })
   isDeactivated: boolean;
 
+  @Column({nullable:true})
+  resetPasswordToken: string;
+
   @Column({ default: UserRole.USER, enum: UserRole, type: 'enum' })
   role: UserRole;
   
@@ -44,6 +47,7 @@ export class User {
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];
+
 
   @OneToOne(() => UserDetails, (userDetails) => userDetails.user)
   userDetails: UserDetails;
