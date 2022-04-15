@@ -24,7 +24,7 @@ import { UsersModule } from './users/users.module';
 
         return {
           ssl: isProduction,
-          logging: true,
+          logging: false,
           extra: {
             ssl: isProduction ? { rejectUnauthorized: false } : null,
           },
@@ -36,6 +36,7 @@ import { UsersModule } from './users/users.module';
           database: configService.get('DB_DATABASE'),
           autoLoadEntities: true,
           synchronize: true,
+          url: configService.get('DATABASE_URL'),
         };
       },
     }),

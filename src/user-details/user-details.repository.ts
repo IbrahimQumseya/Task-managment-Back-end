@@ -6,11 +6,9 @@ import {
 } from '@nestjs/common';
 import { User } from '../auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateUserDetailsDto } from './dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
-import { v4 as uuid } from 'uuid';
-import { UpdateUserDetailsDto } from 'src/auth/dto/updateUser-userDetails.dto';
-import { logger } from 'src/logger/logger.winston';
+import { logger } from '../logger/logger.winston';
+import { CreateUserDetailsDto } from './Dto/create-user-details-dto';
 
 @EntityRepository(UserDetails)
 export class UserDetailsRepository extends Repository<UserDetails> {

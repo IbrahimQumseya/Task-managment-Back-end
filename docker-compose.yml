@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  api:
+    # image: ibrah-oliver/nestjs-dockerized
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Only will build development stage from our dockerfile
+      target: development
+    # Mount our host Directory to the docker container
+    # Mount (.) current directory to the docker container ibrah/src/app
+    # reflect file changes from host to container
+    volumes:
+      - .:/ibrah/src/app
+      - ./ibrah/src/app/node_modules
+    # Run in Debug Mode: npm run start:debug --> Don't forget to start your vscode debugger!
+    # Run in dev Mode: npm run start:dev
+    command: npm run start:debug
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: development
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: user
+      DB_PASSWORD: password
+      DB_DATABASE: db
+      JWT_SECRECT: 1hard_to_guess_secret7890a
+      DATABASE_URL: postgres://user:password@postgres:5432/db
+    ports:
+      - 3001:3001
+      # debugging port
+      - 9229:9229
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - 35000:5432
+
+    ### Postgres Adminer ###
+  # postgres_admin:
+  #   image: dpage/pgadmin4:4.28
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.de
+  #     PGADMIN_DEFAULT_PASSWORD: password
+  #   ports:
+  #     - 5050:80
