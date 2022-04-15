@@ -9,6 +9,7 @@ package-lock.json
 
 # Logs
 .env*
+.env.stage.dev
 logs
 *.log
 npm-debug.log*
