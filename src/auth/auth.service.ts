@@ -62,12 +62,12 @@ export class AuthService {
         },
       };
       const accessToken: string = await this.jwtService.sign(payload);
-      logger.log('verbose', `Signing in ${user.username} , Success!`);
+      logger.log('verbose', `Signing in ${user?.username} , Success!`);
       return { accessToken };
     } else {
       logger.log(
         'error',
-        `Signing in ${user.username} "Please check you login credentials"  , Failed!`,
+        `Signing in ${user?.username} "Please check you login credentials"  , Failed!`,
       );
       throw new UnauthorizedException('Please check you login credentials');
     }

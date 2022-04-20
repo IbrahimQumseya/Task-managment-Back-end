@@ -124,6 +124,12 @@ export class TaskRepository extends Repository<Task> {
         )
         .getMany();
 
+      logger.log(
+        'info',
+        `Success to get tasks for user "${
+          user.username
+        }". Filter: ${JSON.stringify(filterDto)}`,
+      );
       return tasks;
     } catch (error) {
       logger.log(

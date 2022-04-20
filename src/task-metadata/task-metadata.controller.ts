@@ -47,7 +47,7 @@ export class TaskMetadataController {
   ): Promise<TaskMetadata[]> {
     return this.tasksMetadataService.getAllTasksDetails(filterDto, task);
   }
-  
+
   @Post()
   @ApiCreatedResponse({ description: 'Create Metadata Task' })
   @ApiBody({ type: CreateMetaTaskDto })
