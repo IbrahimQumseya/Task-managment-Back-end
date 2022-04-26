@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskMetadata } from './entity/task-metadata.entity';
 import { TaskMetadataRepository } from './metatasks.repository';
 import { TaskRepository } from '../tasks/tasks.repository';
+import { LoggerService } from '../logger/logger.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { TaskRepository } from '../tasks/tasks.repository';
       TaskMetadataRepository,
     ]),
   ],
-  providers: [TaskMetadataService],
+  providers: [TaskMetadataService, LoggerService],
   controllers: [TaskMetadataController],
 })
 export class TaskMetadataModule {}

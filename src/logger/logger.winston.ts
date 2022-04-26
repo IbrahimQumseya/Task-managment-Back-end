@@ -2,7 +2,6 @@ import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 // var S3StreamLogger = require('s3-streamlogger').S3StreamLogger;
 import * as S3StreamLogger from 's3-streamlogger';
-import { ConfigService } from '@nestjs/config';
 
 const verboseTransport = {
   filename: 'logs/verbose/verbose-%DATE%.log',
@@ -12,19 +11,20 @@ const verboseTransport = {
   maxSize: '20m',
   maxFiles: '14d',
 };
-console.log('AWS_BUCKET_NAME');
 
-const s3_stream = new S3StreamLogger.S3StreamLogger({
-  bucket: process.env.AWS_BUCKET_NAME,
-  access_key_id: process.env.AWS_ACCESS_KEY,
-  secret_access_key: process.env.AWS_SECRET_KEY,
-  folder: 'logs/',
-  upload_every: 1000,
-});
+// console.log(s3_stream);
 
-const transportS3Logger = new winston.transports.Stream({
-  stream: s3_stream,
-});
+// const s3_stream = new S3StreamLogger.S3StreamLogger({
+//   bucket: process.env.AWS_BUCKET_NAME,
+//   access_key_id: process.env.AWS_ACCESS_KEY,
+//   secret_access_key: process.env.AWS_SECRET_KEY,
+//   folder: 'logs/',
+//   upload_every: 1000,
+// });
+
+// const transportS3Logger = new winston.transports.Stream({
+//   stream: s3_stream,
+// });
 
 const errorTransport = {
   filename: 'logs/error/error-%DATE%.log',
@@ -59,12 +59,17 @@ const errorTransports = new winston.transports.DailyRotateFile(errorTransport);
 const infoTransports = new winston.transports.DailyRotateFile(infoTransport);
 const warnTransports = new winston.transports.DailyRotateFile(warnTransport);
 
+export const transports = [
+  verboseTransports,
+  errorTransports,
+  infoTransports,
+  warnTransports,
+];
 export const logger = winston.createLogger({
   transports: [
     verboseTransports,
     errorTransports,
     infoTransports,
     warnTransports,
-    transportS3Logger,
   ],
 });

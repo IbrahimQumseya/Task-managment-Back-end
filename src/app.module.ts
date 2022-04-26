@@ -9,6 +9,7 @@ import { UserDetailsModule } from './user-details/user-details.module';
 import { UsersModule } from './users/users.module';
 import { FilesService } from './files/files.service';
 import { FilesModule } from './files/files.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { FilesModule } from './files/files.module';
     UserDetailsModule,
     UsersModule,
     FilesModule,
+    LoggerModule,
   ],
 })
 export class AppModule {}
