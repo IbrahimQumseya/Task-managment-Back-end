@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TransformInterceptor } from './transform.interceptor';
+import { config as configS3 } from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const consoleLogger = new Logger();
@@ -16,6 +18,12 @@ async function bootstrap() {
       'access-token',
     )
     .build();
+  const configService = app.get(ConfigService);
+  configS3.update({
+    accessKeyId: configService.get('AWS_ACCESS_KEY'),
+    secretAccessKey: configService.get('AWS_SECRET_KEY'),
+    region: configService.get('AWS_BUCKET_REGION'),
+  });
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());

@@ -11,12 +11,15 @@ import { UserDetailsRepository } from 'src/user-details/user-details.repository'
 import * as fs from 'fs';
 import { UserRole } from 'src/auth/enum/user-role.enum';
 import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import { FilesService } from 'src/files/files.service';
+import PublicFile from 'src/files/entity/PublicFile.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
     private userRepository: UsersRepository,
+    private readonly filesService: FilesService,
     @InjectRepository(UserDetailsRepository)
     private userDetailsRepository: UserDetailsRepository,
   ) {}
@@ -28,6 +31,45 @@ export class UsersService {
     return this.userRepository.getProfileImage(user, res);
   }
 
+  async deleteAvatarS3(userId: string) {
+    const user = await this.userRepository.getUser(userId);
+    if (user.avatar?.id) {
+      await this.userRepository.update(userId, {
+        ...user,
+        avatar: null,
+        profileImage: null,
+      });
+      await this.filesService.deletePublicFile(user.avatar?.id);
+    }
+  }
+
+  //Upload to S3 avatar
+  async UploadAvatarS3(
+    userId: string,
+    imageBuffer: Buffer,
+    fileName: string,
+  ): Promise<PublicFile> {
+    try {
+      const user = await this.userRepository.getUser(userId);
+
+      if (user.avatar) {
+        await this.userRepository.updateOne(userId, null, null);
+
+        await this.filesService.deletePublicFile(user.avatar.id);
+      }
+      const avatar = await this.filesService.uploadPublicFile(
+        imageBuffer,
+        fileName,
+      );
+
+      await this.userRepository.updateOne(userId, avatar.key, avatar);
+
+      return avatar;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+  // //Upload in local storage
   async uploadFile(userId: string, imagePath: string): Promise<User> {
     const user = await this.userRepository.getUser(userId);
 
@@ -44,6 +86,7 @@ export class UsersService {
 
     return this.userRepository.updateOne(userId, imagePath);
   }
+
   async updateUser(
     user: User,
     updateUserDetailsDto: UpdateUserDetailsDto,

@@ -10,17 +10,24 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
-import { logger } from './../logger/logger.winston';
+// import { logger } from './../logger/logger.winston';
 import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
+import { LoggerService } from '../logger/logger.service';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
+  constructor(private readonly loggerService: LoggerService) {
+    super();
+  }
   async getTaskById(id: string): Promise<Task> {
     try {
       const found = await this.findOne(id);
       return found;
     } catch (error) {
-      logger.log('error', `the user is not found "${error}"`);
+      this.loggerService.logger.log({
+        level: 'error',
+        message: `the user is not found "${error}"`,
+      });
       throw new NotFoundException(`the user is not found "${id}"`);
     }
   }
@@ -40,7 +47,6 @@ export class TaskRepository extends Repository<Task> {
         .set({ status: newStatus })
         .where('id = :id', { id })
         .execute();
-      console.log(res);
 
       if (res.affected === 1) {
         const task = await this.getTaskById(id);
@@ -64,7 +70,10 @@ export class TaskRepository extends Repository<Task> {
       const tasks = query.getMany();
       return tasks;
     } catch (error) {
-      logger.log('error', `the tasks are not found "${error}"`);
+      this.loggerService.logger.log({
+        level: 'error',
+        message: `the tasks are not found "${error}"`,
+      });
       throw new Error(error);
     }
   }
@@ -124,15 +133,25 @@ export class TaskRepository extends Repository<Task> {
         )
         .getMany();
 
+      this.loggerService.logger.log({
+        level: 'info',
+        message: `Success to get tasks for user "${
+          user.username
+        }". Filter: ${JSON.stringify(filterDto)}`,
+      });
       return tasks;
     } catch (error) {
-      logger.log(
-        'error',
+      this.loggerService.logger.log({
+        level: 'error',
+        message: `Faild to get tasks for user "${
+          user.username
+        }". Filter: ${JSON.stringify(filterDto)} "${error}"`,
+      });
+      throw new InternalServerErrorException(
         `Faild to get tasks for user "${
           user.username
         }". Filter: ${JSON.stringify(filterDto)} "${error}"`,
       );
-      throw new InternalServerErrorException();
     }
   }
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
@@ -147,7 +166,10 @@ export class TaskRepository extends Repository<Task> {
       await this.save(task);
       return task;
     } catch (error) {
-      logger.log('error', `couldn't save the Task "${error}"`);
+      this.loggerService.logger.log({
+        level: 'error',
+        message: `couldn't save the Task "${error}"`,
+      });
     }
   }
 }

@@ -7,6 +7,9 @@ import { configValidationSchema } from './config.schema';
 import { TaskMetadataModule } from './task-metadata/task-metadata.module';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UsersModule } from './users/users.module';
+import { FilesService } from './files/files.service';
+import { FilesModule } from './files/files.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -24,7 +27,7 @@ import { UsersModule } from './users/users.module';
 
         return {
           ssl: isProduction,
-          logging: true,
+          logging: false,
           extra: {
             ssl: isProduction ? { rejectUnauthorized: false } : null,
           },
@@ -43,6 +46,8 @@ import { UsersModule } from './users/users.module';
     TaskMetadataModule,
     UserDetailsModule,
     UsersModule,
+    FilesModule,
+    LoggerModule,
   ],
 })
 export class AppModule {}

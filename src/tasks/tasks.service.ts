@@ -9,9 +9,8 @@ import { Task } from './task.entity';
 import { User } from '../auth/user.entity';
 import { TaskMetadataRepository } from 'src/task-metadata/metatasks.repository';
 import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
-import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
-import { createQueryBuilder } from 'typeorm';
-import { logger } from 'src/logger/logger.winston';
+// import { logger } from 'src/logger/logger.winston';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class TasksService {
@@ -19,6 +18,7 @@ export class TasksService {
     @InjectRepository(TaskRepository)
     private taskRepository: TaskRepository,
     private taskMetadataTask: TaskMetadataRepository,
+    private readonly logger: LoggerService,
   ) {}
 
   async getTaskLimitStartEnd(
@@ -45,7 +45,10 @@ export class TasksService {
     const found = await this.taskRepository.findOne({ where: { id, user } });
 
     if (!found) {
-      logger.log('error', `Task with ID "${id}" not Found`);
+      this.logger.logger.log({
+        level: 'error',
+        message: `Task with ID "${id}" not Found`,
+      });
       throw new NotFoundException(`Task with ID "${id}" not Found`);
     }
     return found;
@@ -53,6 +56,14 @@ export class TasksService {
 
   async deleteTaskById(id: string, user: User): Promise<void> {
     const task = await this.taskRepository.getTaskById(id);
+    if (!task) {
+      this.logger.logger.log({
+        level: 'error',
+        message: `Task with ID "${id}" not Found - delete-Task`,
+      });
+      throw new NotFoundException(`Task with ID "${id}" not Found`);
+    }
+
     const deletedTask = await this.taskMetadataTask.deleteSelectedTask(task);
   }
 
@@ -66,7 +77,7 @@ export class TasksService {
     await this.taskRepository.save(task);
     return task;
   }
-  
+
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const task = await this.taskRepository.createTask(createTaskDto, user);
     const taskMetadata = await this.taskMetadataTask.createMetadataTask(
