@@ -6,7 +6,10 @@ package-lock.json
 /uploads
 
 .uploads
-
+# env.
+.env.*
+.env.stage.dev
+.env.stage.prod
 # Logs
 .env*
 .env.stage.dev
