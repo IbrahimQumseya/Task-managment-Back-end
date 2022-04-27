@@ -17,6 +17,7 @@ export class TasksService {
   constructor(
     @InjectRepository(TaskRepository)
     private taskRepository: TaskRepository,
+    @InjectRepository(TaskMetadataRepository)
     private taskMetadataTask: TaskMetadataRepository,
     private readonly logger: LoggerService,
   ) {}
@@ -38,6 +39,8 @@ export class TasksService {
   }
 
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
+    console.log('SERVICE', this.logger.logger);
+
     return this.taskRepository.getTasks(filterDto, user);
   }
 

@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
 import {
+  Inject,
+  Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -12,19 +14,17 @@ import { Task } from './task.entity';
 import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
 // import { logger } from './../logger/logger.winston';
 import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
-import { LoggerService } from '../logger/logger.service';
+import { LoggerService } from '../utils/logger';
 
+@Injectable()
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
-  constructor(private readonly loggerService: LoggerService) {
-    super();
-  }
   async getTaskById(id: string): Promise<Task> {
     try {
       const found = await this.findOne(id);
       return found;
     } catch (error) {
-      this.loggerService.logger.log({
+      LoggerService.logger.log({
         level: 'error',
         message: `the user is not found "${error}"`,
       });
@@ -70,7 +70,7 @@ export class TaskRepository extends Repository<Task> {
       const tasks = query.getMany();
       return tasks;
     } catch (error) {
-      this.loggerService.logger.log({
+      LoggerService.logger.log({
         level: 'error',
         message: `the tasks are not found "${error}"`,
       });
@@ -133,7 +133,7 @@ export class TaskRepository extends Repository<Task> {
         )
         .getMany();
 
-      this.loggerService.logger.log({
+      LoggerService.logger.log({
         level: 'info',
         message: `Success to get tasks for user "${
           user.username
@@ -141,7 +141,7 @@ export class TaskRepository extends Repository<Task> {
       });
       return tasks;
     } catch (error) {
-      this.loggerService.logger.log({
+      LoggerService.logger.log({
         level: 'error',
         message: `Faild to get tasks for user "${
           user.username
@@ -166,7 +166,7 @@ export class TaskRepository extends Repository<Task> {
       await this.save(task);
       return task;
     } catch (error) {
-      this.loggerService.logger.log({
+      LoggerService.logger.log({
         level: 'error',
         message: `couldn't save the Task "${error}"`,
       });

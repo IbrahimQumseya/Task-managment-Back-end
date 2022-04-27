@@ -14,6 +14,7 @@ export class LoggerService {
     secret_access_key: this.configService.get('AWS_SECRET_KEY'),
     folder: 'logs/',
     upload_every: 1000,
+    tags: { type: 'error', project: 'myproject' },
   });
 
   private verboseTransport = {
@@ -24,18 +25,6 @@ export class LoggerService {
     maxSize: '20m',
     maxFiles: '14d',
   };
-
-  // private s3_stream = new S3StreamLogger.S3StreamLogger({
-  //   bucket: process.env.AWS_BUCKET_NAME,
-  //   access_key_id: process.env.AWS_ACCESS_KEY,
-  //   secret_access_key: process.env.AWS_SECRET_KEY,
-  //   folder: 'logs/',
-  //   upload_every: 1000,
-  // });
-
-  // private transportS3Logger = new winston.transports.Stream({
-  //   stream: s3_stream,
-  // });
 
   private errorTransport = {
     filename: 'logs/error/error-%DATE%.log',

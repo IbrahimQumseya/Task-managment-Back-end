@@ -10,7 +10,6 @@ import { logger } from 'src/logger/logger.winston';
 
 @EntityRepository(TaskMetadata)
 export class TaskMetadataRepository extends Repository<TaskMetadata> {
-  private logger = new Logger('TaskMetadataRepository', { timestamp: true });
 
   async deleteSelectedTask(task: Task): Promise<void> {
     const findMetaTask = await this.getTaskDetail(task.id);
