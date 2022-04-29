@@ -11,9 +11,11 @@ import { logger } from 'src/logger/logger.winston';
 import { UserRole } from './enum/user-role.enum';
 import { join } from 'path';
 import PublicFile from 'src/files/entity/PublicFile.entity';
+import LoggerService from '../utils/logger';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
+  private logger = new LoggerService();
   async createUser(
     authCredentialsDto: AuthSignUpCredentialsDto,
   ): Promise<string> {
@@ -32,23 +34,23 @@ export class UsersRepository extends Repository<User> {
     });
     try {
       await this.save(user);
-      logger.log(
-        'verbose',
-        `Signing up a user with name of ${user.username} , Success!`,
-      );
+      this.logger.logger.log({
+        level: 'info',
+        message: `Signing up a user with name of ${user.username} , Success!`,
+      });
       return 'USER_CREATED';
     } catch (error) {
       if (error.code === '23505') {
-        logger.log(
-          'error',
-          `user already exist with username of : ${user.username} , Failed!`,
-        );
+        this.logger.logger.log({
+          level: 'error',
+          message: `user already exist with username of : ${user.username} , Failed!`,
+        });
         throw new ConflictException('Username already exists');
       } else {
-        logger.log(
-          'error',
-          `Internal Server Error check user entities ${user.username} , FAILED!`,
-        );
+        this.logger.logger.log({
+          level: 'error',
+          message: `Internal Server Error check user entities ${user.username} , FAILED!`,
+        });
         throw new InternalServerErrorException();
       }
     }
@@ -57,7 +59,10 @@ export class UsersRepository extends Repository<User> {
   async getUser(idUser: string): Promise<User> {
     const user = this.findOne({ where: { id: idUser } });
     if (!user) {
-      logger.log('error', `User with id of ${idUser} Not Found , Failed!`);
+      this.logger.logger.log({
+        level: 'error',
+        message: `User with id of ${idUser} Not Found , Failed!`,
+      });
       throw new NotFoundException(`User with id of ${idUser} Not Found`);
     }
     return user;

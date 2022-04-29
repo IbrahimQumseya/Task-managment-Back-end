@@ -18,6 +18,7 @@ import { LoggerModule } from './logger/logger.module';
       validationSchema: configValidationSchema,
     }),
     TasksModule,
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

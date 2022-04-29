@@ -9,11 +9,11 @@ import { EntityRepository, Repository } from 'typeorm';
 import { CreateUserDetailsDto } from './dto/create-user-details-dto';
 import { UserDetails } from './entity/user-details.entity';
 import { v4 as uuid } from 'uuid';
-import { UpdateUserDetailsDto } from 'src/auth/dto/updateUser-userDetails.dto';
-import { logger } from 'src/logger/logger.winston';
+import LoggerService from '../utils/logger';
 
 @EntityRepository(UserDetails)
 export class UserDetailsRepository extends Repository<UserDetails> {
+  private logger = new LoggerService();
   async getUserDetails(user: User): Promise<UserDetails> {
     const query = this.createQueryBuilder('userDetails');
     const { id } = user;
@@ -23,16 +23,16 @@ export class UserDetailsRepository extends Repository<UserDetails> {
           id,
         })
         .getOne();
-      logger.log(
-        'verbose',
-        `getting user Details of username of ${user.username}   , Success!`,
-      );
+      this.logger.logger.log({
+        level: 'info',
+        message: `getting user Details of username of ${user.username}   , Success!`,
+      });
       return details;
     } catch (error) {
-      logger.log(
-        'error',
-        `getting user Details of username of ${user.username} "${error}"   , FailED!`,
-      );
+      this.logger.logger.log({
+        level: 'error',
+        message: `getting user Details of username of ${user.username} "${error}"   , FailED!`,
+      });
       throw new NotFoundException();
     }
   }
@@ -51,23 +51,23 @@ export class UserDetailsRepository extends Repository<UserDetails> {
     });
     try {
       await this.save(userDetails);
-      logger.log(
-        'verbose',
-        `Create user Details of user of  ID ${idUser}   , Success!`,
-      );
+      this.logger.logger.log({
+        level: 'info',
+        message: `Create user Details of user of  ID ${idUser}   , Success!`,
+      });
       return userDetails;
     } catch (error) {
       if (error.code === '23505') {
-        logger.error(
-          'error',
-          `Create user Details of user of  ID ${idUser} "error : ""User Details already exists""   , Failed!`,
-        );
+        this.logger.logger.log({
+          level: 'error',
+          message: `Create user Details of user of  ID ${idUser} "error : ""User Details already exists""   , Failed!`,
+        });
         throw new ConflictException('User Details already exists');
       } else {
-        logger.error(
-          'error',
-          `Create user Details of user of  ID ${idUser} "error : ""${error}""   , Failed!`,
-        );
+        this.logger.logger.log({
+          level: 'error',
+          message: `Create user Details of user of  ID ${idUser} "error : ""${error}""   , Failed!`,
+        });
         throw new InternalServerErrorException();
       }
     }
