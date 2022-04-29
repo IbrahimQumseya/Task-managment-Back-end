@@ -25,14 +25,6 @@ export default class LoggerService {
     upload_every: 1000,
     // tags: { type: 'error', project: 'myproject' },
   });
-  // private s3_stream = new S3StreamLogger.S3StreamLogger({
-  //   bucket: 'nestjs-task-management-back-end',
-  //   access_key_id: 'AKIAZL2JLEVH6MLUTYPO',
-  //   secret_access_key: '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',
-  //   folder: 'logs/',
-  //   upload_every: 2000,
-  //   tags: { type: 'error', project: 'myproject' },
-  // });
 
   private verboseTransport = {
     filename: 'logs/verbose/verbose-%DATE%.log',
