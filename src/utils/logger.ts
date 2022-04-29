@@ -3,20 +3,8 @@ import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import * as dotenv from 'dotenv';
 dotenv.config();
-console.log(process.env);
 
 export default class LoggerService {
-  // constructor(private configService: ConfigService) {}
-
-  // static configService: ConfigService = new ConfigService();
-  // static s3_stream = new S3StreamLogger.S3StreamLogger({
-  //   bucket: LoggerService.configService.get('AWS_BUCKET_NAME'),
-  //   access_key_id: LoggerService.configService.get('AWS_ACCESS_KEY'),
-  //   secret_access_key: LoggerService.configService.get('AWS_SECRET_KEY'),
-  //   folder: 'logs/',
-  //   upload_every: 1000,
-  // });
-
   private s3_stream = new S3StreamLogger.S3StreamLogger({
     bucket: process.env.AWS_BUCKET_NAME,
     access_key_id: process.env.AWS_ACCESS_KEY,
