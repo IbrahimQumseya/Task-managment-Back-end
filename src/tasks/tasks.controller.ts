@@ -29,6 +29,7 @@ import {
   ApiBody,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { AdminGuard } from '../gaurds/admin.gaurd';
 //jwtStartegy
 @ApiTags('Tasks')
 @Controller('tasks')

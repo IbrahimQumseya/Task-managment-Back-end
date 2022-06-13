@@ -32,6 +32,7 @@ import { UsersService } from './users.service';
 import * as path from 'path';
 import { UserRole } from 'src/auth/enum/user-role.enum';
 import { UserDetails } from 'src/user-details/entity/user-details.entity';
+import { AdminGuard } from '../gaurds/admin.gaurd';
 
 export const storage = {
   storage: diskStorage({
@@ -97,6 +98,7 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(AuthGuard())
+  @UseGuards(new AdminGuard())
   updateUserRole(
     @Param('userId') userId: string,
     @Param('role') role: UserRole,
