@@ -54,12 +54,15 @@ export class UsersRepository extends Repository<User> {
   }
 
   async getUser(idUser: string): Promise<User> {
-    const user = this.findOne({ where: { id: idUser } });
-    if (!user) {
+    try {
+      const user = this.createQueryBuilder()
+        .where('id=:idUser', { idUser })
+        .getOne();
+      return user;
+    } catch (error) {
       logger.log('error', `User with id of ${idUser} Not Found , Failed!`);
       throw new NotFoundException(`User with id of ${idUser} Not Found`);
     }
-    return user;
   }
 
   async updateUserRole(userId: string, role: UserRole): Promise<User> {
@@ -91,6 +94,15 @@ export class UsersRepository extends Repository<User> {
       // Role: UserRole[key].toLowerCase(),
     }));
     return roleForUsers;
+  }
+
+  async GetAllUsers(): Promise<User[]> {
+    try {
+      const users = await this.createQueryBuilder().getMany();
+      return users;
+    } catch (error) {
+      throw new InternalServerErrorException(`${error}`);
+    }
   }
 
   async updateOne(userId: string, imagePath: string): Promise<User> {

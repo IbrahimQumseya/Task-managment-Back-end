@@ -17,7 +17,13 @@ import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
 export class TaskRepository extends Repository<Task> {
   async getTaskById(id: string): Promise<Task> {
     try {
-      const found = await this.findOne(id);
+      const found = await this.createQueryBuilder('task')
+        .innerJoinAndSelect('task.taskMetadata', 'taskMetadata')
+        .innerJoinAndSelect('task.user', 'user')
+        .where('task.id =:id', { id })
+        .getOne();
+      console.log('00000000000000000');
+
       return found;
     } catch (error) {
       logger.log('error', `the user is not found "${error}"`);
@@ -25,12 +31,12 @@ export class TaskRepository extends Repository<Task> {
     }
   }
 
-  // bug
+ 
   async updateStatusById(id: string, status: TaskStatus): Promise<Task> {
-    const query = this.createQueryBuilder();
+    const query = this.createQueryBuilder('task');
     const task = await this.getTaskById(id);
     if (!task) {
-      throw new NotFoundException();
+      throw new NotFoundException()
     }
     try {
       const toUpperCase: string = status.toUpperCase();
@@ -38,7 +44,7 @@ export class TaskRepository extends Repository<Task> {
       const res = await query
         .update(Task)
         .set({ status: newStatus })
-        .where('id = :id', { id })
+        .where('task.id = :id', { id })
         .execute();
       console.log(res);
 
@@ -99,11 +105,9 @@ export class TaskRepository extends Repository<Task> {
     }
   }
 
-  async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
+  async getAllTasksByAdmin(filterDto: GetTasksFilterDto): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
-
-    query.where({ user });
 
     if (status) {
       query.andWhere('task.status = :status', { status });
@@ -116,12 +120,45 @@ export class TaskRepository extends Repository<Task> {
     }
     try {
       const tasks = await query
-        .innerJoinAndSelect('task.user', 'user')
-        .innerJoinAndSelect(
+        .leftJoinAndSelect('task.user', 'user')
+        .leftJoinAndSelect(
           'task.taskMetadata',
           'taskMetadata',
           "taskMetadata.isDeactivated= 'true'",
         )
+        .getMany();
+
+      return tasks;
+    } catch (error) {
+      logger.log(
+        'error',
+        `Faild to get tasks for user " Filter: ${JSON.stringify(
+          filterDto,
+        )} "${error}"`,
+      );
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
+    const { status, search } = filterDto;
+    const query = this.createQueryBuilder('task');
+
+    if (status) {
+      query.andWhere('task.status = :status', { status });
+    }
+    if (search) {
+      query.andWhere(
+        '(LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search))',
+        { search: `%${search}%` },
+      );
+    }
+    try {
+      const tasks = await query
+        .innerJoinAndSelect('task.user', 'user', 'user.id=:userId', {
+          userId: user.id,
+        })
+        .leftJoinAndSelect('task.taskMetadata', 'taskMetadata')
         .getMany();
 
       return tasks;
@@ -135,6 +172,7 @@ export class TaskRepository extends Repository<Task> {
       throw new InternalServerErrorException();
     }
   }
+
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const { title, description } = createTaskDto;
     const task = this.create({

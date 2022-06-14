@@ -81,10 +81,25 @@ export class TasksController {
   // }
 
   @Get()
+  @UseGuards(new AdminGuard())
+  @ApiOkResponse({ description: 'Get all the tasks for a user' })
+  getAllTasksByAdmin(@Query() filterDto: GetTasksFilterDto): Promise<Task[]> {
+    logger.log({
+      level: 'verbose',
+      message: `User "" retreiving all tasks. Filters: ${JSON.stringify(
+        filterDto,
+      )}`,
+    });
+    return this.tasksService.getAllTasksByAdmin(filterDto);
+  }
+
+  @Get('/user')
+  // @ApiParam({ name: 'userId', description: 'User ID' })
   @ApiOkResponse({ description: 'Get all the tasks for a user' })
   getTasks(
     @Query() filterDto: GetTasksFilterDto,
     @GetUser() user: User,
+    // @Param('userId') userId: string,
   ): Promise<Task[]> {
     logger.log({
       level: 'verbose',
@@ -98,12 +113,12 @@ export class TasksController {
   @Get('/:id')
   @ApiOkResponse({ description: 'Get Task By Id for a user' })
   @ApiParam({ name: 'id', type: String, description: 'Enter Task ID' })
-  getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Task> {
+  getTaskById(@Param('id') id: string): Promise<Task> {
     logger.log({
       level: 'info',
-      message: `user with username of ${user.username} has requested to check task ID of${id}`,
+      message: `user with username of ${id} has requested to check task ID of${id}`,
     });
-    return this.tasksService.getTaskById(id, user);
+    return this.tasksService.getTaskById(id);
   }
 
   @Delete('/:id')
@@ -120,20 +135,22 @@ export class TasksController {
     return this.tasksService.deleteTaskById(id, user);
   }
 
-  @Post()
+  @Post('/user/:userId')
+  @UseGuards(new AdminGuard())
+  @ApiParam({ name: 'userId', description: 'User ID' })
   @ApiCreatedResponse({ description: 'Create A task' })
   @ApiBody({ type: CreateTaskDto })
   createTask(
-    @GetUser() user: User,
+    @Param('userId') userId: string,
     @Body() createTaskDto: CreateTaskDto,
   ): Promise<Task> {
     logger.log({
       level: 'verbose',
-      message: `User: "${
-        user.username
-      }" creating new task . Data: ${JSON.stringify(createTaskDto)}`,
+      message: `User: "${userId}" creating new task . Data: ${JSON.stringify(
+        createTaskDto,
+      )}`,
     });
-    return this.tasksService.createTask(createTaskDto, user);
+    return this.tasksService.createTask(createTaskDto, userId);
   }
 
   @Patch('/:id/status')
