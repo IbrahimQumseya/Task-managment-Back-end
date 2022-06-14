@@ -80,4 +80,8 @@ export class UsersService {
   async getRolesForUser(): Promise<object> {
     return this.userRepository.getRolesForUser();
   }
+
+  async GetAllUsers(): Promise<User[]> {
+    return this.userRepository.GetAllUsers();
+  }
 }

@@ -12,12 +12,16 @@ import { GetTaskMetadaDto } from 'src/task-metadata/dto/get-tasks-metadata.dto';
 import { TaskMetadata } from 'src/task-metadata/entity/task-metadata.entity';
 import { createQueryBuilder } from 'typeorm';
 import { logger } from 'src/logger/logger.winston';
+import { UsersRepository } from '../auth/users.respository';
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(TaskRepository)
     private taskRepository: TaskRepository,
+    @InjectRepository(UsersRepository)
+    private userRepository: UsersRepository,
+    @InjectRepository(TaskMetadataRepository)
     private taskMetadataTask: TaskMetadataRepository,
   ) {}
 
@@ -37,18 +41,23 @@ export class TasksService {
     return this.taskRepository.getDetailsById(task.taskMetadata, filterDto);
   }
 
+  async getAllTasksByAdmin(filterDto: GetTasksFilterDto): Promise<Task[]> {
+    return this.taskRepository.getAllTasksByAdmin(filterDto);
+  }
+
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     return this.taskRepository.getTasks(filterDto, user);
   }
 
-  async getTaskById(id: string, user: User): Promise<Task> {
-    const found = await this.taskRepository.findOne({ where: { id, user } });
+  async getTaskById(id: string): Promise<Task> {
+    // const found = await this.taskRepository.findOne({ where: { id, user } });
+    // const found = await this.getTaskById(id);
 
-    if (!found) {
-      logger.log('error', `Task with ID "${id}" not Found`);
-      throw new NotFoundException(`Task with ID "${id}" not Found`);
-    }
-    return found;
+    // if (!found) {
+    //   logger.log('error', `Task with ID "${id}" not Found`);
+    //   throw new NotFoundException(`Task with ID "${id}" not Found`);
+    // }
+    return this.taskRepository.getTaskById(id);
   }
 
   async deleteTaskById(id: string, user: User): Promise<void> {
@@ -61,23 +70,28 @@ export class TasksService {
     status: TaskStatus,
     user: User,
   ): Promise<Task> {
-    const task = await this.getTaskById(id, user);
-    task.status = status;
-    await this.taskRepository.save(task);
-    return task;
+    return this.taskRepository.updateStatusById(id, status);
   }
-  
-  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
-    const task = await this.taskRepository.createTask(createTaskDto, user);
-    const taskMetadata = await this.taskMetadataTask.createMetadataTask(
-      {
-        details: 'hello there213',
-        taskId: task.id,
-        isDeactivated: 'false',
-      },
-      task,
-    );
-    return task;
+
+  async createTask(
+    createTaskDto: CreateTaskDto,
+    userId: string,
+  ): Promise<Task> {
+    const user = await this.userRepository.getUser(userId);
+    if (user) {
+      const task = await this.taskRepository.createTask(createTaskDto, user);
+      const taskMetadata = await this.taskMetadataTask.createMetadataTask(
+        {
+          details: '',
+          taskId: task.id,
+          isDeactivated: 'false',
+        },
+        task,
+      );
+      const newTask = await this.taskRepository.getTaskById(task.id);
+      return newTask;
+    }
+    throw new NotFoundException(`${userId} NOT FOUND`);
   }
   // createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
   //   return this.taskRepository.createTask(createTaskDto, user);

@@ -110,8 +110,16 @@ export class UsersController {
   @ApiOkResponse({ description: 'what roles we have ' })
   @ApiBearerAuth('access-token')
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  @UseGuards(AuthGuard())
   getRolesForUser(): Promise<object> {
     return this.userService.getRolesForUser();
+  }
+
+  @Get()
+  @ApiOkResponse({ description: 'getAll users ' })
+  @ApiBearerAuth('access-token')
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @UseGuards(new AdminGuard())
+  GetAllUsers(): Promise<User[]> {
+    return this.userService.GetAllUsers();
   }
 }
