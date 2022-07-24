@@ -133,4 +133,30 @@ export class UsersRepository extends Repository<User> {
     );
     return { response, imageName: 'uploads/profileImages/' + imageNameUser };
   }
+
+  async updateUserPassword(
+    email: string,
+    newPassword: string,
+    token: string,
+  ): Promise<User> {
+    const user = await this.findOne({ email });
+    if (!user) throw new NotFoundException();
+    if (user.resetPasswordToken === token) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      try {
+        await this.createQueryBuilder()
+          .update(User)
+          .set({ password: hashedPassword })
+          .where('id =:id', { id: user.id })
+          .execute();
+
+        return user;
+      } catch (error) {
+        throw new InternalServerErrorException('update');
+      }
+    } else {
+      throw new InternalServerErrorException('expired');
+    }
+  }
 }

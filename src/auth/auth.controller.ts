@@ -46,4 +46,13 @@ export class AuthController {
   ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentialsDto);
   }
+
+  @Post('/reset-password/:token')
+  @ApiOkResponse({ description: 'User reset password' })
+  resetPassword(
+    @Param('token') token: string,
+    @Body() data: { newPassword: string },
+  ) {
+    return this.authService.resetPassword(token, data.newPassword);
+  }
 }
